@@ -1,25 +1,6 @@
 <template>
   <div class="home">
-    <!-- <youtube-iframe
-      :video-id="videoId"
-      :player-width="640"
-      :player-height="360"
-      @ready="onReady"
-      @state-change="onChange"
-      ref="yt"
-    ></youtube-iframe> -->
     <div id="player" ref="yt"/>
-    <!-- <iframe
-      id="player"
-      width="640"
-      height="360"
-      :src="videoUrl"
-      title="YouTube video player"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
-      @change="handleClick"
-    ></iframe> -->
     <div v-if="captionLines.length">
       <div v-for="(line, index) in captionLines" :key="index">
         <caption-bar :text="line"></caption-bar>
@@ -30,11 +11,8 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-// import { Player } from '@techassi/vue-youtube-iframe';
-// import YT from "@types/youtube";
 import CaptionBar from '@/components/CaptionBar.vue'; // @ is an alias to /src
 import axios from 'axios';
-// import YouTubeIframeLoader from "youtube-iframe";
     
 @Options({
   components: {
@@ -48,25 +26,13 @@ export default class Home extends Vue {
   videoId = "H14bBuluwB8";
   videoUrl = `https://www.youtube.com/embed/${this.videoId}?enablejsapi=1`;
   player!: any;
-// "http://www.youtube.com/embed/M7lc1UVf-VE?enablejsapi=1&origin=http://example.com"
-
+  iframeWindow!: any; // the source "window" that will emit the "message" events.
+  currentStatus!: YT.PlayerState;
+  currentTime!: number;
+  lastTimeUpdate = 0; // we can compare against new updates.
 
   async mounted() {
     console.log("mounted...");
-
-    // this.player = this.$refs.yt as typeof Player;
-
-    // let tag = document.createElement('script')
-    // tag.setAttribute('src', 'https://www.youtube.com/iframe_api');
-    // const firstScriptTag = document.getElementsByTagName("script")[0];
-    // document.head.appendChild(tag);
-
-    // this.player = document.getElementById('player');
-
-    // window.YTConfig = {
-    //   host: 'https://www.youtube.com/iframe_api'
-    // };
-    // const host = 'https://www.youtube.com';
 
     // append youtube iFrame API from https://www.youtube.com/iframe_api
     // docs: https://developers.google.com/youtube/iframe_api_reference#Getting_Started
@@ -98,44 +64,34 @@ export default class Home extends Vue {
         'onStateChange': this.onPlayerStateChange,
       },
     })
+
+    // TODO: Turn off any captions as default! 
+
+    // Listen to events triggered by postMessage.
+    this.iframeWindow = this.player.getIframe().contentWindow;
+    window.addEventListener("message", this.handlePostMessage);
   }
 
-  // onYouTubeIframeAPIReady() {
-  //   YouTubeIframeLoader.load((YT) => {
-  //     const player = new YT.Player('player', {
-  //       height: '360',
-  //       width: '640',
-  //       videoId: this.videoId,
-  //       events: {
-  //         'onReady': this.onPlayerReady,
-  //         'onStateChange': this.onPlayerStateChange
-  //       }
-  //     });
-  //   });
-  // }
+  handlePostMessage(event: any) {
+    // Check that the event was sent from the YouTube IFrame.
+    if (event.source === this.iframeWindow) {
+      var data = JSON.parse(event.data);
 
-  // initYoutube() {
-  //   console.log("initYoutube");
-  //   this.player = new YT.Player("player", {
-  //     // startSeconds: '1999',
-  //     width: 640,
-  //     height: 360,
-  //     videoId: this.videoId,
-  //     events: {
-  //       onReady: this.onPlayerReady,
-  //       onStateChange: this.onPlayerStateChange
-  //     }
-  //   });
-  // }
+      // The "infoDelivery" event is used by YT to transmit any kind of information
+      // change in the player (eg. current time, playback quality change)
+      if (
+        data.event === "infoDelivery" &&
+        data.info &&
+        data.info.currentTime
+      ) {
+        // currentTime is emitted very frequently - only care about whole second changes
+        var time = Math.floor(data.info.currentTime);
 
-  onReady() {
-    console.log("ready");
-  }
-
-  onChange(event: any) {
-    console.log(event.target.getCurrentTime());
-    if (event.data == YT.PlayerState.PLAYING) {
-      console.log(event.data);      
+        if (time !== this.lastTimeUpdate) {
+          this.currentTime = this.lastTimeUpdate = time;
+          console.log(time); // update the dom, emit an event, whatever.
+        }
+      }
     }
   }
 
@@ -149,13 +105,9 @@ export default class Home extends Vue {
   }
 
   onPlayerStateChange(event: any) {
-    console.log("Player state changed", event.target.getCurrentTime());
+    if (event.data == YT.PlayerState.PLAYING) {
+      console.log("Player state changed", event.target.getCurrentTime());
+    }
   }
-
-  // onYouTubeIframeAPIReady = () => {
-  //   console.log("onYouTubeIframeAPIReady");
-  //   this.initYoutube();
-  // };
-
 }
 </script>
