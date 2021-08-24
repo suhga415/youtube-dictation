@@ -23,6 +23,7 @@ app.use(cors_1.default({
     origin: ['http://localhost:8080']
 }));
 const fetchCaptions = (req, res) => {
+    console.log("fetching captions...");
     axios_1.default.get(url)
         .then((response) => {
         const captionRaw = response.data.events;

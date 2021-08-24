@@ -2,12 +2,6 @@ import dotenv from 'dotenv';
 import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
-// import bodyParser from 'body-parser';
-// import https from 'https';
-// import converter from 'xml-js';
-
-// const youtubeApiKey = process.env.YOUTUBE_API_KEY;
-// const apiEndpoint = `https://www.googleapis.com/youtube/v3/captions/${videoId}?key=${youtubeApiKey}`;
 
 const lang = "en";
 const videoId = "H14bBuluwB8";
@@ -24,7 +18,6 @@ app.use(cors({
 }));
 
 const fetchCaptions = (req, res) => {
-  console.log("fetching captions...");
   axios.get(url)
     .then((response) => {
       const captionRaw = response.data.events;
