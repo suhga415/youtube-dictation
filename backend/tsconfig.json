@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2015",
+    "sourceMap": true,
+    // "strict": true,
+    // "jsx": "preserve",
+    // "importHelpers": true,
+    // "moduleResolution": "node",
+    // "experimentalDecorators": true,
+    // "skipLibCheck": true,
+    "esModuleInterop": true,
+    // "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+    },
+    // "lib": [
+    //   "esnext",
+    //   "dom",
+    //   "dom.iterable",
+    //   "scripthost"
+    // ],
+    "rootDir": ".",
+    "outDir": "build",
+  },
+  "include": [
+    "src/**/*.ts",
+    "tests/**/*.ts",
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
