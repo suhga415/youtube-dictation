@@ -3,7 +3,10 @@
     <div id="player" ref="yt"/>
     <div v-if="captionLines.length">
       <div v-for="(line, index) in captionLines" :key="index">
-        <caption-bar :text="line"></caption-bar>
+        <caption-bar
+          :caption="line"
+          :isActive="(currentTime && currentTime >= line.startTimeMs && currentTime <= line.endTimeMs) ? true : false"
+        ></caption-bar>
       </div>
     </div>
   </div>
@@ -13,27 +16,25 @@
 import { Options, Vue } from 'vue-class-component';
 import CaptionBar from '@/components/CaptionBar.vue'; // @ is an alias to /src
 import axios from 'axios';
-    
+import { Caption } from '../types/Caption';
+
 @Options({
   components: {
     CaptionBar,
   },
 })
 
-
 export default class Home extends Vue {
-  captionLines: string[] = [];
+  captionLines: Caption[] = [];
   videoId = "H14bBuluwB8";
   videoUrl = `https://www.youtube.com/embed/${this.videoId}?enablejsapi=1`;
   player!: any;
-  iframeWindow!: any; // the source "window" that will emit the "message" events.
+  iframeWindow!: any; // the source "window" that will emit the "message" events
   currentStatus!: YT.PlayerState;
-  currentTime!: number;
-  lastTimeUpdate = 0; // we can compare against new updates.
+  currentTime: number | null = null;
+  lastTimeUpdate = 0; // compare against new updates
 
   async mounted() {
-    console.log("mounted...");
-
     // append youtube iFrame API from https://www.youtube.com/iframe_api
     // docs: https://developers.google.com/youtube/iframe_api_reference#Getting_Started
     const tag = document.createElement("script");
@@ -47,6 +48,10 @@ export default class Home extends Vue {
       this.initYoutubePlayer();
     };
 
+    await this.fetchCaptions();
+  }
+
+  async fetchCaptions() {
     await axios.get('http://localhost:4000/')
       .then(response => {
         this.captionLines = response.data;
@@ -65,7 +70,7 @@ export default class Home extends Vue {
       },
     })
 
-    // TODO: Turn off any captions as default! 
+    // TODO: Turn off any captions of the player as default! 
 
     // Listen to events triggered by postMessage.
     this.iframeWindow = this.player.getIframe().contentWindow;
@@ -76,7 +81,6 @@ export default class Home extends Vue {
     // Check that the event was sent from the YouTube IFrame.
     if (event.source === this.iframeWindow) {
       var data = JSON.parse(event.data);
-
       // The "infoDelivery" event is used by YT to transmit any kind of information
       // change in the player (eg. current time, playback quality change)
       if (
@@ -84,12 +88,10 @@ export default class Home extends Vue {
         data.info &&
         data.info.currentTime
       ) {
-        // currentTime is emitted very frequently - only care about whole second changes
-        var time = Math.floor(data.info.currentTime);
-
+        var time = Math.floor(data.info.currentTime * 10) * 100;
         if (time !== this.lastTimeUpdate) {
+          // update the dom, emit an event, whatever.
           this.currentTime = this.lastTimeUpdate = time;
-          console.log(time); // update the dom, emit an event, whatever.
         }
       }
     }

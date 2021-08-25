@@ -2,12 +2,14 @@ import dotenv from 'dotenv';
 import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
+import { Caption } from './types/Caption';
 
 const lang = "en";
 const videoId = "H14bBuluwB8";
 const url = `https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
 
 dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -21,14 +23,21 @@ const fetchCaptions = (req, res) => {
   axios.get(url)
     .then((response) => {
       const captionRaw = response.data.events;
-      const captionLines = captionRaw.map(line => line.segs[0].utf8);
-      res.send(captionLines); // converter.xml2js(response.data)
+      const captionLines = captionRaw.map(line => {
+        return {
+          text: line.segs[0].utf8,
+          startTimeMs: line.tStartMs,
+          endTimeMs: line.tStartMs + line.dDurationMs,
+        } as Caption;
+      });
+      res.send(captionLines);
     })
 }
 
 app.get("/", fetchCaptions);
 
-const handleListening = () =>
-    console.log(`🧀 listening on: http://localhost:${PORT}!`);
+const handleListening = () => {
+  console.log(`🧀 listening on: http://localhost:${PORT}!`);
+}
 
 app.listen(process.env.PORT || PORT, handleListening);
