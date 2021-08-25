@@ -1,12 +1,16 @@
 <template>
   <div class="home">
-    <div id="player" ref="yt"/>
-    <div v-if="captionLines.length">
-      <div v-for="(line, index) in captionLines" :key="index">
-        <caption-bar
-          :caption="line"
-          :isActive="(currentTime && currentTime >= line.startTimeMs && currentTime <= line.endTimeMs) ? true : false"
-        ></caption-bar>
+    <div class="main-container">
+      <div class="player-container">
+        <div id="player"></div>
+      </div>
+      <div class="captions-container" v-if="captionLines.length">
+        <div v-for="(line, index) in captionLines" :key="index">
+          <caption-bar
+            :caption="line"
+            :isActive="(currentTime && currentTime >= line.startTimeMs && currentTime <= line.endTimeMs) ? true : false"
+          ></caption-bar>
+        </div>
       </div>
     </div>
   </div>
@@ -113,3 +117,22 @@ export default class Home extends Vue {
   }
 }
 </script>
+<style>
+.home {
+  text-align: center;
+}
+.main-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 700px;
+  background-color: #F3F1F5;
+}
+.captions-container {
+  height: 600px;
+  padding: 10px;
+  background-color: #FDE49C;
+  overflow: auto;
+}
+</style>

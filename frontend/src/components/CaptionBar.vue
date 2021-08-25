@@ -4,13 +4,13 @@
     v-bind:class="{ 'caption-bar--active': isActive }"
   >
     <div class="caption-bar__answer">{{ caption.text }}</div>
-    <input
+    <textarea
       :id="'captionInput'+caption.startTimeMs"
       ref="captionInput"
       class="caption-bar__input"
       v-bind:class="{ 'caption-bar__input--active': isActive }"
       type="text"
-    />
+    ></textarea>
   </div>
 </template>
 
@@ -43,7 +43,7 @@ export default class CaptionBar extends Vue {
 
 <style>
 .caption-bar {
-  height: 50px;
+  /* height: 50px; */
   width: 500px;
   text-align: left;
   padding: 5px 10px;
