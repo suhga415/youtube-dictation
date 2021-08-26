@@ -3,8 +3,11 @@
 ## TODO:
 - Load captions [x]
 - Load video as a widget [x]
-- Header (input) [ ]
-- Sync video and caption (focus) [x]
+- Video selection bar (input) [ ]
+- Loading spiner / indicator [ ]
+- Sync 
+  - video --> caption (focus) [x]
+  - caption --> video (focus) [ ]
   - auto-scroll [ ]
 - Spell check logic [ ]
 - Users?
