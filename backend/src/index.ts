@@ -3,13 +3,12 @@ import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
 import { Caption } from './types/Caption';
-
-const lang = "en";
-const videoId = "H14bBuluwB8";
-const url = `https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
-
 dotenv.config();
 
+// let lang = "en";
+// let videoId = ""; // H14bBuluwB8
+// const url = `https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
+// const urlForCaptionList = `http://video.google.com/timedtext?type=list&v=${videoId}`;
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -19,8 +18,11 @@ app.use(cors({
   origin: ['http://localhost:8080']
 }));
 
-const fetchCaptions = (req, res) => {
-  axios.get(url)
+const fetchCaptions = async (req, res) => {
+  const lang = "en"; // req.query.lang;
+  const videoId = req.query.videoId;
+  const url = `https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
+  await axios.get(url)
     .then((response) => {
       const captionRaw = response.data.events;
       const captionLines = captionRaw.map(line => {
@@ -32,6 +34,16 @@ const fetchCaptions = (req, res) => {
       });
       res.send(captionLines);
     })
+}
+
+const fetchCaptionList = async (req, res) => {
+  const videoId = req.query.videoId;
+  const url = `http://video.google.com/timedtext?type=list&v=${videoId}`;
+  await axios.get(url)
+  .then((response) => {
+    console.log(response); // XML
+  })
+  res.send("hi");
 }
 
 app.get("/", fetchCaptions);

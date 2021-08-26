@@ -7,9 +7,10 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const express_1 = __importDefault(require("express"));
 const axios_1 = __importDefault(require("axios"));
 const cors_1 = __importDefault(require("cors"));
-const lang = "en";
-const videoId = "H14bBuluwB8";
-const url = `https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
+// let lang = "en";
+// let videoId = ""; // H14bBuluwB8
+// const url = `https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
+// const urlForCaptionList = `http://video.google.com/timedtext?type=list&v=${videoId}`;
 dotenv_1.default.config();
 const app = express_1.default();
 const PORT = process.env.PORT || 4000;
@@ -18,6 +19,9 @@ app.use(cors_1.default({
     origin: ['http://localhost:8080']
 }));
 const fetchCaptions = (req, res) => {
+    const lang = "en";
+    const videoId = req.query.videoId;
+    const url = `https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
     axios_1.default.get(url)
         .then((response) => {
         const captionRaw = response.data.events;
