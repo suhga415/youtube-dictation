@@ -1,6 +1,9 @@
-# youtube-dictation
+# youtube-dictation 🖍
 
-## TODO:
+## TODOs
+
+### Priority 1
+
 - Load captions [x]
 - Load video as a widget [x]
 - Video selection bar (input) [x]
@@ -10,10 +13,14 @@
   - caption --> video (focus) [ ]
   - auto-scroll [ ]
 - Spell check logic [ ]
+- Design & Styling... [ ]
+
+### Priority 2
+
 - Users?
   - Log In / Log Out [ ]
   - My Video / Progress [ ]
 - Download captions [ ]
 - Video search / recommendation [ ]
-- Design & Styling... [ ]
-  - Characters? Decorations... [ ]
+- Characters? Decorations... [ ]
+- 404 Not Found page

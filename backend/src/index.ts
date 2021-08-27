@@ -36,7 +36,7 @@ const fetchCaptions = async (req, res) => {
     res.send(captionLines);
   })
   .catch(err => {
-    console.log("Error in fetching captions: ", err.message);
+    console.log(`Error in fetching captions for: ${videoId}`, err.message);
   });
 }
 
@@ -55,7 +55,7 @@ const fetchCaptionTracks = async (req, res) => {
     res.send(tracks);
   })
   .catch(err => {
-    console.log("Error in fetching caption tracks: ", err.message);
+    console.log(`Error in fetching caption tracks for: ${videoId}`, err.message);
   });
 }
 

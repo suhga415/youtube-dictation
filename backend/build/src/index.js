@@ -45,7 +45,7 @@ const fetchCaptions = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.send(captionLines);
     })
         .catch(err => {
-        console.log("Error in fetching captions: ", err.message);
+        console.log(`Error in fetching captions for: ${videoId}`, err.message);
     });
 });
 const fetchCaptionTracks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -63,7 +63,7 @@ const fetchCaptionTracks = (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.send(tracks);
     })
         .catch(err => {
-        console.log("Error in fetching caption tracks: ", err.message);
+        console.log(`Error in fetching caption tracks for: ${videoId}`, err.message);
     });
 });
 app.get("/", fetchCaptions);
