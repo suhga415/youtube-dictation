@@ -3,9 +3,9 @@
 ## TODO:
 - Load captions [x]
 - Load video as a widget [x]
-- Video selection bar (input) [ ]
-- Loading spiner / indicator [ ]
-- Sync 
+- Video selection bar (input) [x]
+- Loading spinner / indicator [ ]
+- Sync
   - video --> caption (focus) [x]
   - caption --> video (focus) [ ]
   - auto-scroll [ ]
@@ -14,4 +14,6 @@
   - Log In / Log Out [ ]
   - My Video / Progress [ ]
 - Download captions [ ]
+- Video search / recommendation [ ]
 - Design & Styling... [ ]
+  - Characters? Decorations... [ ]

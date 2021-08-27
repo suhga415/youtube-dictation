@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
-import { Caption } from './types/Caption';
+import converter from 'xml-js';
+import { Caption, Track } from './types';
 dotenv.config();
 
 // let lang = "en";
@@ -19,34 +20,47 @@ app.use(cors({
 }));
 
 const fetchCaptions = async (req, res) => {
-  const lang = "en"; // req.query.lang;
+  const lang = req.query.langCode;
   const videoId = req.query.videoId;
   const url = `https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
   await axios.get(url)
-    .then((response) => {
-      const captionRaw = response.data.events;
-      const captionLines = captionRaw.map(line => {
-        return {
-          text: line.segs[0].utf8,
-          startTimeMs: line.tStartMs,
-          endTimeMs: line.tStartMs + line.dDurationMs,
-        } as Caption;
-      });
-      res.send(captionLines);
-    })
+  .then((response) => {
+    const captionRaw = response.data.events;
+    const captionLines = captionRaw.map(line => {
+      return {
+        text: line.segs[0].utf8,
+        startTimeMs: line.tStartMs,
+        endTimeMs: line.tStartMs + line.dDurationMs,
+      } as Caption;
+    });
+    res.send(captionLines);
+  })
+  .catch(err => {
+    console.log("Error in fetching captions: ", err.message);
+  });
 }
 
-const fetchCaptionList = async (req, res) => {
+const fetchCaptionTracks = async (req, res) => {
   const videoId = req.query.videoId;
   const url = `http://video.google.com/timedtext?type=list&v=${videoId}`;
   await axios.get(url)
   .then((response) => {
-    console.log(response); // XML
+    const json = JSON.parse(converter.xml2json(response.data, {compact: true}));
+    const tracks = json.transcript_list.track.map(item => {
+      return {
+        langCode: item._attributes.lang_code,
+        langName: item._attributes.lang_translated,
+      } as Track;
+    });
+    res.send(tracks);
   })
-  res.send("hi");
+  .catch(err => {
+    console.log("Error in fetching caption tracks: ", err.message);
+  });
 }
 
 app.get("/", fetchCaptions);
+app.get("/caption-tracks", fetchCaptionTracks);
 
 const handleListening = () => {
   console.log(`🧀 listening on: http://localhost:${PORT}!`);

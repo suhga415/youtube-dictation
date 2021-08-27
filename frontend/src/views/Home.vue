@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="video-select-bar">
-      <!-- <form> -->
+      <!-- <form @submit.prevent> -->
         <label for="yt-url">Video URL: </label>
         <input
           v-model="videoUrl"
@@ -12,11 +12,11 @@
           @input="onUrlInputChange"
         >
         <label for="yt-lang">Language: </label>
-        <select v-model="videoLanguage" id="yt-lang">
+        <select v-model="videoLangCode" id="yt-lang">
           <option disabled value="">Please select one</option>
-          <option>A</option>
-          <option>B</option>
-          <option>C</option>
+          <option v-for="(item, index) in captionTracks" :key="index" :value="item.langCode">
+            {{ item.langName }}
+          </option>
         </select>
         <button @click="onSubmit">Submit</button>
       <!-- </form> -->
@@ -29,7 +29,7 @@
         <div v-for="(line, index) in captionLines" :key="index">
           <caption-bar
             :caption="line"
-            :isActive="(currentTime && currentTime >= line.startTimeMs && currentTime <= line.endTimeMs) ? true : false"
+            :isActive="isCaptionActive(index)"
           ></caption-bar>
         </div>
       </div>
@@ -42,6 +42,7 @@ import { Options, Vue } from 'vue-class-component';
 import CaptionBar from '@/components/CaptionBar.vue'; // @ is an alias to /src
 import axios from 'axios';
 import { Caption } from '../types/Caption';
+import { Track } from '../types/Track';
 
 @Options({
   components: {
@@ -51,9 +52,10 @@ import { Caption } from '../types/Caption';
 
 export default class Home extends Vue {
   captionLines: Caption[] = [];
+  captionTracks: Track[] = [];
   videoUrl = "";
-  videoId!: string; // "H14bBuluwB8", "8KkKuTCFvzI" (length: 11)
-  videoLanguage: string | null = null;
+  videoId!: string; // "H14bBuluwB8", "8KkKuTCFvzI", "1ALfKWG2nmw" (length: 11)
+  videoLangCode: string | null = null;
   videoWidgetUrl!: string; // = `https://www.youtube.com/embed/${this.videoId}?enablejsapi=1`;
   player!: any;
   iframeWindow!: any; // the source "window" that will emit the "message" events
@@ -64,34 +66,46 @@ export default class Home extends Vue {
   async mounted() {
   }
 
-  onYouTubeIframeAPIReady = () => {
-    this.initYoutubePlayer();
-  };
+  isCaptionActive(index: number) {
+    const currentLine = this.captionLines[index];
+    if (index < this.captionLines.length) {
+      const nextLine = this.captionLines[index + 1];
+      return (this.currentTime)
+        && (this.currentTime >= currentLine.startTimeMs)
+        && (this.currentTime < nextLine.startTimeMs);
+    } else {
+      return true;
+    }
+  }
 
-  onUrlInputChange(event: any) {
+  async onUrlInputChange(event: any) {
     const prefix = "youtube.com/watch?v=";
     if ((this.videoUrl).includes(prefix) && this.videoUrl.length >= prefix.length + 11) {
       // 1. refine the input value, extract video ID
       this.videoId = (this.videoUrl.replace("https://www.", "")).replace(prefix, "");
       // 2. check if it's a valid video ID / the video exists
       if (this.validVideoId(this.videoId)) {
-        // 3. update languages
-        console.log("good!");
+        console.log("this input is valid.");
+        // 3. update language options
+        await this.fetchCaptionTracks();
       } else {
-        console.log("Not valid!");
+        this.captionTracks = [];
       }
     }
   }
 
   async validVideoId(id: string) {
+    // is there a better way to check?
     const url = "http://img.youtube.com/vi/" + id + "/mqdefault.jpg";
-    // const url = "http://youtube.com/get_video_info?el=detailpage&video_id=" + id;
     const { status } = await fetch(url);
     if (status === 404) return false;
     return true;
   }
 
   async onSubmit() {
+    // TODO: go to route with parameter or query... like /8KkKuTCFvzI
+    // so that it can be refreshed.
+
     await this.fetchCaptions();
     this.prepareYoutubeIFrameAPI();
   }
@@ -101,10 +115,24 @@ export default class Home extends Vue {
     await axios.get('http://localhost:4000/', {
       params: {
         videoId: this.videoId,
+        langCode: this.videoLangCode,
       }
     })
     .then(response => {
       this.captionLines = response.data;
+    })
+    .catch(err => console.log(err.message));
+  }
+
+  async fetchCaptionTracks() {
+    console.log("videoId for caption tracks: ", this.videoId);
+    await axios.get('http://localhost:4000/caption-tracks', {
+      params: {
+        videoId: this.videoId,
+      }
+    })
+    .then(response => {
+      this.captionTracks = response.data;
     })
     .catch(err => console.log(err.message));
   }
@@ -154,7 +182,7 @@ export default class Home extends Vue {
         data.info &&
         data.info.currentTime
       ) {
-        var time = Math.floor(data.info.currentTime * 10) * 100;
+        var time = Math.floor(data.info.currentTime * 100) * 10;
         if (time !== this.lastTimeUpdate) {
           // update the dom, emit an event, whatever.
           this.currentTime = this.lastTimeUpdate = time;
