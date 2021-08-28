@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw, useRoute } from 'vue-router'
 import Home from '../views/Home.vue'
 import Dictation from '../views/Dictation.vue'
+import DictationIndex from '../views/DictationIndex.vue'
 import User from '../views/User.vue'
 
 const routes: Array<RouteRecordRaw> = [
@@ -8,6 +9,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'home',
     component: Home
+  },
+  {
+    path: '/dictation',
+    name: 'dictation-index',
+    component: DictationIndex
   },
   {
     path: '/dictation/:id/:lang',

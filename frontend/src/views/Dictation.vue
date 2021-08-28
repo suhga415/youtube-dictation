@@ -9,6 +9,7 @@
           <caption-bar
             :caption="line"
             :isActive="isCaptionActive(index)"
+            @caption-click="onCaptionClick"
           ></caption-bar>
         </div>
       </div>
@@ -60,18 +61,6 @@ export default class Dictation extends Vue {
     if (this.player !== null && this.player.destroy) {
       this.player.destroy();
       delete this.player;
-    }
-  }
-
-  isCaptionActive(index: number) {
-    const currentLine = this.captionLines[index];
-    if (index < this.captionLines.length) {
-      const nextLine = this.captionLines[index + 1];
-      return (this.currentTime)
-        && (this.currentTime >= currentLine.startTimeMs)
-        && (this.currentTime < nextLine.startTimeMs);
-    } else {
-      return true;
     }
   }
 
@@ -130,13 +119,29 @@ export default class Dictation extends Vue {
         data.info &&
         data.info.currentTime
       ) {
-        var time = Math.floor(data.info.currentTime * 100) * 10;
+        var time = Math.ceil(data.info.currentTime * 100) * 10;
         if (time !== this.lastTimeUpdate) {
           // update the dom, emit an event, whatever.
           this.currentTime = this.lastTimeUpdate = time;
         }
       }
     }
+  }
+
+  isCaptionActive(index: number) {
+    const currentLine = this.captionLines[index];
+    if (index < this.captionLines.length - 1) {
+      return (this.currentTime)
+        && (this.currentTime >= currentLine.startTimeMs)
+        && (this.currentTime < this.captionLines[index + 1].startTimeMs);
+    } else {
+      return (this.currentTime)
+        && (this.currentTime >= currentLine.startTimeMs);
+    }
+  }
+
+  onCaptionClick(timeMs: number) {
+    this.player.seekTo(timeMs / 1000, true); // allowSeekAhead: boolean
   }
 
   stopVideo() {
@@ -157,10 +162,6 @@ export default class Dictation extends Vue {
 <style>
 .dictation {
   text-align: center;
-}
-.video-select-bar {
-  background-color: #9DDAC6;
-  height: 50px;
 }
 .main-container {
   display: flex;

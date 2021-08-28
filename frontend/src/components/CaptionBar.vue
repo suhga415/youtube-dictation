@@ -10,6 +10,7 @@
       class="caption-bar__input"
       v-bind:class="{ 'caption-bar__input--active': isActive }"
       type="text"
+      @click="onInputClick"
     ></textarea>
   </div>
 </template>
@@ -37,6 +38,11 @@ export default class CaptionBar extends Vue {
         input.focus();
       }
     }
+  }
+
+  onInputClick(event: any) {
+    const startTimeMS = parseInt(event.srcElement.id.replace("captionInput", ""));
+    this.$emit("caption-click", startTimeMS);
   }
 }
 </script>

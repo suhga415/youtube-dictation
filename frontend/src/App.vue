@@ -54,7 +54,7 @@ export default class App extends Vue {
   }
 
   async validVideoId(id: string) {
-    // is there a better way to check?
+    // Hmmm is there a better way to check?
     const url = "http://img.youtube.com/vi/" + id + "/mqdefault.jpg";
     const { status } = await fetch(url);
     if (status === 404) return false;
@@ -105,5 +105,10 @@ export default class App extends Vue {
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.video-select-bar {
+  background-color: #9DDAC6;
+  height: 50px;
 }
 </style>
