@@ -62,7 +62,29 @@ export default class CaptionBar extends Vue {
 }
 .caption-bar__answer {
   margin-bottom: 5px;
+  color: transparent;
+  text-shadow: 0 0 8px #111;
+  transition: 0.2s;
 }
+.caption-bar__answer:hover {
+  color: #111;
+  text-shadow: none;
+}
+
+/* h1 {
+  font-size: 4em;
+  text-align: center;
+  color: transparent;
+  text-shadow: #111 0 0 15px;
+  transition: 0.4s;
+  font-family: HelveticaNeue;
+  
+  &:hover {
+    color: #111;
+    text-shadow: none;
+  }
+} */
+
 .caption-bar__input{
   width: 100%;
 }

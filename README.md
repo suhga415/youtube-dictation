@@ -10,20 +10,26 @@
 - Sync
   - video --> caption (focus) [x]
   - caption --> video (focus) [x]
-  - Focused caption - middle (auto-scroll) [ ]
+  - scroll to focused caption - middle [ ]
 - Blur the caption text [x]
 - Spell check logic [ ]
-- Settings (pop up) [ ]
+- Settings (pop up)
+  - blur level [ ]
+  - line spacing [ ]
+  - font size [ ]
 - Design & Styling... [ ]
 
 ### Priority 2
 - User-specific features
+  - Sign in with Google (OAuth) [ ]
+  - Sign in with Twitter? (OAuth) [ ]
   - Log In / Log Out [ ]
   - My Video / Progress [ ]
   - Bookmark / make notes [ ]
 - Download captions [ ]
 - Video search / recommendation [ ]
-- Characters? Decorations... [ ]
-- 404 Not Found page
+- Some more decorations... [ ]
+- 404 Not Found page [ ]
 
 ### Requirements / Bugs
+- (일시정지 상태에서) 가장 첫 캡션을 클릭했을 때 active 표시가 되지 않음.
