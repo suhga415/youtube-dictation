@@ -11,19 +11,20 @@
   - video --> caption (focus) [x]
   - caption --> video (focus) [x]
   - scroll to focused caption - middle [ ]
-  - video play... [ ]
 - Blur the caption text [x]
-- Spell check logic [ ]
+- Spell check logic [x]
   - allow special characters [x]
-  - put caret right position [ ]
-  - Prohibit pasting [ ]
+  - put caret right position [x]
+  - handle paste event [x]
 - Keyboard shortcuts
   - Fn + Space ==> video start/pause [ ]
-  - Punch Enter --> move to next input [ ]
+  - move to next / previous input [ ]
+  - section repeat play [ ]
 - Settings (pop up)
   - blur level [ ]
   - line spacing [ ]
   - font size [ ]
+  - toggle repeat play [ ]
 - Design & Styling... [ ]
 
 ### Priority 2
