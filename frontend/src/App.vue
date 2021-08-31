@@ -37,6 +37,7 @@ export default class App extends Vue {
   videoUrl = "";
   videoId!: string; // "H14bBuluwB8", "8KkKuTCFvzI", "1ALfKWG2nmw" (length: 11)
   videoLangCode: string | null = null;
+  isCaptionTrackLoading = false;
 
   async onUrlInputChange(event: any) {
     const prefix = "youtube.com/watch?v=";
@@ -62,6 +63,7 @@ export default class App extends Vue {
   }
 
   async fetchCaptionTracks() {
+    this.isCaptionTrackLoading = true;
     await axios.get('http://localhost:4000/caption-tracks', {
       params: {
         videoId: this.videoId,
@@ -70,7 +72,12 @@ export default class App extends Vue {
     .then(response => {
       this.captionTracks = response.data;
     })
-    .catch(err => console.log(err.message));
+    .catch(err => {
+      console.log(err.message);
+    })
+    .finally(() => {
+      this.isCaptionTrackLoading = false;
+    })
   }
 
   onSubmit() {

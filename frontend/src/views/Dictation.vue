@@ -40,6 +40,7 @@ export default class Dictation extends Vue {
   currentStatus!: YT.PlayerState;
   currentTime: number | null = null;
   lastTimeUpdate = 0; // compare against new updates
+  isCaptionLoading = false;
 
   async mounted() {
     this.videoId = this.$route.params.id as string;
@@ -65,6 +66,7 @@ export default class Dictation extends Vue {
   }
 
   async fetchCaptions() {
+    this.isCaptionLoading = true;
     await axios.get('http://localhost:4000/', {
       params: {
         videoId: this.videoId,
@@ -74,7 +76,10 @@ export default class Dictation extends Vue {
     .then(response => {
       this.captionLines = response.data;
     })
-    .catch(err => console.log(err.message));
+    .catch(err => console.log(err.message))
+    .finally(() => {
+      this.isCaptionLoading = false;
+    })
   }
 
   prepareYoutubeIFrameAPI() {

@@ -12,7 +12,6 @@
       @click="onCaptionClick"
       @blur="onBlur"
       @keydown.space="onSpace"
-      @input="onInput"
       @paste="onPaste"
       max="255"
     ></div>
@@ -30,6 +29,9 @@ import { Caption } from '../types/Caption';
 export default class CaptionBar extends Vue {
   @Prop() caption!: Caption;
   @Prop() isActive!: boolean;
+
+  typingTimer!: any;          // timer identifier
+  doneTypingInterval = 1000;  // time in ms
 
   mounted() {
   }
@@ -50,8 +52,22 @@ export default class CaptionBar extends Vue {
     this.$emit("caption-click", startTimeMS);
   }
 
-  // TODO: add event 'onWait' ...
+  // TODO: limit the size (# of chars) of caption bar input! 
 
+  // TODO: event that is triggered when user stops editing
+  onKeyup(event: Event) {
+    clearTimeout(this.typingTimer);
+    this.typingTimer = setTimeout(this.doneTyping, this.doneTypingInterval);
+  }
+
+  onKeyDown(event: Event) {
+    clearTimeout(this.typingTimer);
+  }
+
+  doneTyping() {
+    alert("done typing");
+    // this.spellCheck(id);
+  }
 
   onBlur(event: Event) {
     const id = (event.target as Element).id
@@ -159,8 +175,6 @@ export default class CaptionBar extends Vue {
       position: index
     };
   }
-
-  // TODO: limit the size (# of chars) of caption bar input! 
 
   getWordsOfAnswer(text: string) {
     const refined = text.replace(/\n/g, " ");
