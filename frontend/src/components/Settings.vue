@@ -2,8 +2,17 @@
   <div class="settings-backdrop" @click.self="closeSettingsModal">
     <div class="settings-modal">
       <h1>Settings</h1>
-      <Toggle v-model="isCaptionBlur" class="toggle-blue" />
-      <div class="output">Data: {{ isCaptionBlur }}</div>
+      <div class="settings_item settings_blur-toggle">
+        <Toggle v-model="isCaptionBlur" class="toggle-theme" onLabel="On" offLabel="Off" />
+        <div class="settings_item_text">Caption blur: {{ isCaptionBlur }}</div>
+      </div>
+      <div class="settings_item">
+        <Toggle v-model="isTranslationBlur" class="toggle-theme" onLabel="On" offLabel="Off" />
+        <div class="settings_item_text">Translation blur: {{ isTranslationBlur }}</div>
+      </div>
+      <div class="settings_item"></div>
+      <div class="settings_item"></div>
+      <div class="settings_item"></div>
     </div>
   </div>
 </template>
@@ -21,6 +30,7 @@ import Toggle from '@vueform/toggle';
 
 export default class Settings extends Vue {
   isCaptionBlur = true;
+  isTranslationBlur = true;
 
   mounted() {
 
@@ -36,14 +46,9 @@ export default class Settings extends Vue {
 }
 </script>
 
-<style>
-/* scoped src="@vueform/toggle/themes/default.css" */
-/* @import "@vueform/toggle/themes/default.css"; */
+<style lang="scss">
+  @import "@vueform/toggle/themes/default.scss";
 
-.toggle-blue {
-  --toggle-bg-on: blue;
-  --toggle-border-on: blue;
-}
   .settings-modal {
     width: 400px;
     padding: 20px;
@@ -59,11 +64,27 @@ export default class Settings extends Vue {
     height: 100%;
   }
   .settings-modal h1 {
-    color: #03cfb4;
+    color: #374151;
     border: none;
     padding: 0;
   }
   .settings-modal p {
     font-style: normal;
   }
+
+  .settings_item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .toggle-theme {
+    --toggle-bg-on: #42b983;
+    --toggle-border-on: #42b983;
+    --toggle-text-on: white;
+    --toggle-text-off: #374151;
+    margin-right: 10px;
+  }
+
 </style>

@@ -84,7 +84,8 @@ export default class CaptionBar extends Vue {
 
   spellCheck(id: string) {
     const inputDiv = document.querySelector(`#${id}`) as HTMLDivElement;
-    const inputWords = this.getWordsOfInput(inputDiv.innerHTML);
+    const inputRawText = inputDiv.innerHTML.replace(/ class="wrong"/g, "");
+    const inputWords = this.getWordsOfInput(inputRawText);
     const answerWords = this.getWordsOfAnswer(this.caption.text);
 
     let inner = "";
@@ -95,10 +96,10 @@ export default class CaptionBar extends Vue {
           // good to go
           inner += inputWords[i] + " ";
         } else { // wrong
-          inner += `<span>${inputWords[i]} </span>`;
+          inner += `<span class="wrong">${inputWords[i]} </span>`;
         }
       } else { // wrong
-        inner += `<span>${inputWords[i]} </span>`;
+        inner += `<span class="wrong">${inputWords[i]} </span>`;
       }
     }
     inputDiv.innerHTML = inner;
@@ -185,7 +186,7 @@ export default class CaptionBar extends Vue {
   }
 
   getWordsOfInput(text: string) {
-    const refined = text.replace(/&nbsp;/g, " ").replace(/<\/?span>/g, "");
+    const refined = text.replace(/&nbsp;/g, " ").replace(/\n/g, " ").replace(/<\/?span>/g, "");
     const words = refined.split(" ").filter(word => word != "");
     return words;
   }
@@ -222,10 +223,6 @@ export default class CaptionBar extends Vue {
 }
 
 .wrong {
-  color: red;
-}
-
-span {
   color: red;
 }
 
