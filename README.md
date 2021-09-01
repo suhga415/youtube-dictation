@@ -21,6 +21,7 @@
   - move to next / previous input [ ]
   - section repeat play [ ]
 - Settings (pop up)
+  - soft transition.. [ ]
   - blur level [ ]
   - line spacing [ ]
   - font size [ ]

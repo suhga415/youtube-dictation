@@ -1,16 +1,24 @@
 <template>
   <div class="dictation">
+    <div v-if="showSettingsModal">
+      <settings @close="closeSettingsModal"></settings>
+    </div>
     <div class="main-container">
       <div class="player-container">
         <div id="player"></div>
       </div>
-      <div class="captions-container" v-if="captionLines.length">
-        <div v-for="(line, index) in captionLines" :key="index">
-          <caption-bar
-            :caption="line"
-            :isActive="isCaptionActive(index)"
-            @caption-click="onCaptionClick"
-          ></caption-bar>
+      <div class="captions-settings">
+        <div class="settings-button-container">
+          <button @click="openSettingsModal">Settings</button>
+        </div>
+        <div class="captions-container" v-if="captionLines.length">
+          <div v-for="(line, index) in captionLines" :key="index">
+            <caption-bar
+              :caption="line"
+              :isActive="isCaptionActive(index)"
+              @caption-click="onCaptionClick"
+            ></caption-bar>
+          </div>
         </div>
       </div>
     </div>
@@ -19,13 +27,15 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import CaptionBar from '@/components/CaptionBar.vue'; // @ is an alias to /src
+import CaptionBar from '@/components/CaptionBar.vue';
+import Settings from '@/components/Settings.vue';
 import axios from 'axios';
 import { Caption } from '../types/Caption';
 
 @Options({
   components: {
     CaptionBar,
+    Settings,
   },
 })
 
@@ -41,6 +51,7 @@ export default class Dictation extends Vue {
   currentTime: number | null = null;
   lastTimeUpdate = 0; // compare against new updates
   isCaptionLoading = false;
+  showSettingsModal = false;
 
   async mounted() {
     this.videoId = this.$route.params.id as string;
@@ -147,6 +158,14 @@ export default class Dictation extends Vue {
 
   onCaptionClick(timeMs: number) {
     this.player.seekTo(timeMs / 1000, true); // allowSeekAhead: boolean
+  }
+
+  openSettingsModal() {
+    this.showSettingsModal = true;
+  }
+
+  closeSettingsModal() {
+    this.showSettingsModal = false;
   }
 
   stopVideo() {
