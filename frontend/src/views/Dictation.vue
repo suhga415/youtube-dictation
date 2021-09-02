@@ -1,7 +1,12 @@
 <template>
   <div class="dictation">
     <div v-if="showSettingsModal">
-      <settings @close="closeSettingsModal"></settings>
+      <settings
+        :show="showSettingsModal"
+        :isCaptionBlurCurrent="isCaptionBlur"
+        :isTranslationBlurCurrent="isTranslationBlur"
+        @close="closeSettingsModal"
+      ></settings>
     </div>
     <div class="main-container">
       <div class="player-container">
@@ -16,6 +21,7 @@
             <caption-bar
               :caption="line"
               :isActive="isCaptionActive(index)"
+              :isCaptionBlur="isCaptionBlur"
               @caption-click="onCaptionClick"
             ></caption-bar>
           </div>
@@ -52,6 +58,11 @@ export default class Dictation extends Vue {
   lastTimeUpdate = 0; // compare against new updates
   isCaptionLoading = false;
   showSettingsModal = false;
+  isCaptionBlur = true;
+  isTranslationBlur = true;
+  blurLevel = 0;
+  lineSpacingLevel = 0;
+  fonrSize = 0
 
   async mounted() {
     this.videoId = this.$route.params.id as string;
@@ -164,8 +175,16 @@ export default class Dictation extends Vue {
     this.showSettingsModal = true;
   }
 
-  closeSettingsModal() {
+  closeSettingsModal(
+    isCaptionBlur: boolean,
+    isTranslationBlur: boolean,
+    captionBlurLevel: number
+  ) {
+    // applied the changed setting
     this.showSettingsModal = false;
+    this.isCaptionBlur = isCaptionBlur;
+    this.isTranslationBlur = isTranslationBlur;
+    this.blurLevel = captionBlurLevel;
   }
 
   stopVideo() {

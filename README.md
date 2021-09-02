@@ -21,11 +21,12 @@
   - move to next / previous input [ ]
   - section repeat play [ ]
 - Settings (pop up)
-  - soft transition.. [ ]
+  - soft transition on open/close [ ]
+  - blur toggle button [x]
   - blur level [ ]
   - line spacing [ ]
   - font size [ ]
-  - toggle repeat play [ ]
+  - toggle repeat play (one caption) [ ]
 - Design & Styling... [ ]
 
 ### Priority 2

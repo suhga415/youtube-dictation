@@ -3,7 +3,11 @@
     class="caption-bar"
     v-bind:class="{ 'caption-bar--active': isActive }"
   >
-    <div class="caption-bar__answer">{{ caption.text }}</div>
+    <div
+      class="caption-bar__answer"
+      v-bind:class="{ 'caption-bar__answer--blur': isCaptionBlur }"
+    >{{ caption.text }}
+    </div>
     <div contenteditable="true"
       :id="'captionInput'+caption.startTimeMs"
       ref="captionInput"
@@ -29,6 +33,7 @@ import { Caption } from '../types/Caption';
 export default class CaptionBar extends Vue {
   @Prop() caption!: Caption;
   @Prop() isActive!: boolean;
+  @Prop() isCaptionBlur!: boolean;
 
   typingTimer!: any;          // timer identifier
   doneTypingInterval = 1000;  // time in ms
@@ -193,7 +198,7 @@ export default class CaptionBar extends Vue {
 }
 </script>
 
-<style>
+<style lang="scss">
 .caption-bar {
   /* height: 50px; */
   width: 500px;
@@ -203,15 +208,18 @@ export default class CaptionBar extends Vue {
   border-radius: 7px;
   background-color: #F3F1F5;
 }
+
 .caption-bar--active {
   background-color: #64C9CF;
 }
-.caption-bar__answer {
+
+.caption-bar__answer--blur {
   margin-bottom: 5px;
   color: transparent;
   text-shadow: 0 0 8px #111;
   transition: 0.2s;
 }
+
 .caption-bar__answer:hover {
   color: #111;
   text-shadow: none;

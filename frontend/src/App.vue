@@ -20,7 +20,7 @@
           {{ item.langName }}
         </option>
       </select>
-      <button @click="onSubmit">Submit</button>
+      <button @click="onClickSubmit">Submit</button>
     </div>
 
   </div>
@@ -80,7 +80,7 @@ export default class App extends Vue {
     })
   }
 
-  onSubmit() {
+  onClickSubmit() {
     this.$router.push({
       name: 'dictation',
       params: {
