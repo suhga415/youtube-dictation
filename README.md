@@ -4,6 +4,7 @@
 
 ### Priority 1
 - Load captions [x]
+- Load translations [ ]
 - Load video as a widget [x]
 - Video selection bar (input) [x]
 - Loading spinner / indicator [ ]
@@ -17,16 +18,16 @@
   - put caret right position [x]
   - handle paste event [x]
 - Keyboard shortcuts
-  - Fn + Space ==> video start/pause [ ]
-  - move to next / previous input [ ]
-  - section repeat play [ ]
+  - video start/pause: Fn + Space [ ]
+  - move to previous/next input: Fn + Up/Down [ ]
+  - toggle play once/repeat: Fn + Enter [ ]
+  - toggle to just play: Fn + ??? [ ]
 - Settings (pop up)
   - soft transition on open/close [ ]
-  - blur toggle button [x]
-  - blur level [ ]
-  - line spacing [ ]
+  - blur toggle [x]
+  - ~~blur level [ ]~~
   - font size [ ]
-  - toggle repeat play (one caption) [ ]
+  - toggle spell check [ ]
 - Design & Styling... [ ]
 
 ### Priority 2

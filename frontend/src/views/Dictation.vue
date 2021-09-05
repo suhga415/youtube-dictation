@@ -5,6 +5,8 @@
         :show="showSettingsModal"
         :isCaptionBlurCurrent="isCaptionBlur"
         :isTranslationBlurCurrent="isTranslationBlur"
+        :captionBlurLvlCurrent="captionBlurLvl"
+        :translationBlurLvlCurrent="translationBlurLvl"
         @close="closeSettingsModal"
       ></settings>
     </div>
@@ -22,6 +24,7 @@
               :caption="line"
               :isActive="isCaptionActive(index)"
               :isCaptionBlur="isCaptionBlur"
+              :captionBlurLvl="captionBlurLvl"
               @caption-click="onCaptionClick"
             ></caption-bar>
           </div>
@@ -60,9 +63,10 @@ export default class Dictation extends Vue {
   showSettingsModal = false;
   isCaptionBlur = true;
   isTranslationBlur = true;
-  blurLevel = 0;
-  lineSpacingLevel = 0;
-  fonrSize = 0
+  captionBlurLvl = 2;
+  translationBlurLvl = 2;
+  lineSpacingLvl = 4;
+  fonrSize = 10;
 
   async mounted() {
     this.videoId = this.$route.params.id as string;
@@ -178,13 +182,15 @@ export default class Dictation extends Vue {
   closeSettingsModal(
     isCaptionBlur: boolean,
     isTranslationBlur: boolean,
-    captionBlurLevel: number
+    captionBlurLvl: number,
+    translationBlurLvl: number,
   ) {
     // applied the changed setting
     this.showSettingsModal = false;
     this.isCaptionBlur = isCaptionBlur;
     this.isTranslationBlur = isTranslationBlur;
-    this.blurLevel = captionBlurLevel;
+    this.captionBlurLvl = captionBlurLvl;
+    this.translationBlurLvl = translationBlurLvl;
   }
 
   stopVideo() {

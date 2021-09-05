@@ -6,6 +6,7 @@
     <div
       class="caption-bar__answer"
       v-bind:class="{ 'caption-bar__answer--blur': isCaptionBlur }"
+      v-bind:style="{ textShadow: captionBlur }"
     >{{ caption.text }}
     </div>
     <div contenteditable="true"
@@ -34,11 +35,18 @@ export default class CaptionBar extends Vue {
   @Prop() caption!: Caption;
   @Prop() isActive!: boolean;
   @Prop() isCaptionBlur!: boolean;
+  @Prop() captionBlurLvl = 2; // default
 
   typingTimer!: any;          // timer identifier
   doneTypingInterval = 1000;  // time in ms
+  captionBlur = "0 0 6px #111";
 
   mounted() {
+  }
+
+  @Watch("captionBlurLvl")
+  onCaptionBlurLvlChange(value: number) {
+    this.captionBlur = `0 0 ${2 * this.captionBlurLvl + 2}px #111`;
   }
 
   @Watch('isActive')
@@ -216,7 +224,7 @@ export default class CaptionBar extends Vue {
 .caption-bar__answer--blur {
   margin-bottom: 5px;
   color: transparent;
-  text-shadow: 0 0 8px #111;
+  // text-shadow: 0 0 8px #111;
   transition: 0.2s;
 }
 
