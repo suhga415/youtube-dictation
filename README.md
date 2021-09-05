@@ -18,14 +18,13 @@
   - [x] put caret right position
   - [x] handle paste event
 - Keyboard shortcuts
-  - [ ] video start/pause: Fn + Space 
-  - [ ] move to previous/next input: Fn + Up/Down
-  - [ ] toggle play once/repeat: Fn + Enter
-  - [ ] toggle to just play: Fn + ???
+  - [x] video start/pause: alt
+  - [x] move to previous/next input: alt + up/down
+  - [ ] toggle play once/repeat: alt + Enter
 - Settings (pop up)
   - [x] soft transition on open/close
   - [x] blur toggle
-  - ~~[ ] blur level~~
+  ~~- [ ] blur level~~
   - [ ] font size change
   - [ ] toggle spell check
 - [ ] Design & Styling...

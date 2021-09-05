@@ -9,14 +9,19 @@
     >{{ caption.text }}
     </div>
     <div contenteditable="true"
-      :id="'captionInput'+caption.startTimeMs"
+      :id="'captionInput'+index"
       ref="captionInput"
       class="caption-bar__input"
       v-bind:class="{ 'caption-bar__input--active': isActive }"
       @click="onCaptionClick"
       @blur="onBlur"
-      @keydown.space="onSpace"
       @paste="onPaste"
+      @keydown.space="onSpace"
+      @keyup.alt.right="togglePlay"
+      @keyup.alt.up="goPrevCaption"
+      @keyup.alt.down="goNextCaption"
+      @keydown.enter="goNextCaption"
+      @keydown.tab="goNextCaption"
       max="255"
     ></div>
   </div>
@@ -34,6 +39,7 @@ export default class CaptionBar extends Vue {
   @Prop() caption!: Caption;
   @Prop() isActive!: boolean;
   @Prop() isCaptionBlur!: boolean;
+  @Prop() index!: number;
 
   typingTimer!: any;          // timer identifier
   doneTypingInterval = 1000;  // time in ms
@@ -46,7 +52,7 @@ export default class CaptionBar extends Vue {
   onChangeActive(value: boolean) {
     if (this.isActive) {
       // TODO: move it to the center
-      const input = document.getElementById(`captionInput${this.caption.startTimeMs}`);
+      const input = document.getElementById(`captionInput${this.index}`);
       if (input) {
         input.focus();
       }
@@ -54,25 +60,36 @@ export default class CaptionBar extends Vue {
   }
 
   onCaptionClick(event: any) {
-    const startTimeMS = parseInt(event.srcElement.id.replace("captionInput", ""));
-    this.$emit("caption-click", startTimeMS);
+    this.$emit("caption-click", this.caption.startTimeMs);
   }
 
   // TODO: limit the size (# of chars) of caption bar input! 
-
   // TODO: event that is triggered when user stops editing
-  onKeyup(event: Event) {
-    clearTimeout(this.typingTimer);
-    this.typingTimer = setTimeout(this.doneTyping, this.doneTypingInterval);
+  // onKeyup(event: Event) {
+  //   clearTimeout(this.typingTimer);
+  //   this.typingTimer = setTimeout(this.doneTyping, this.doneTypingInterval);
+  // }
+  // onKeyDown(event: Event) {
+  //   clearTimeout(this.typingTimer);
+  // }
+  // doneTyping() {
+  //   alert("done typing");
+  //   // this.spellCheck(id);
+  // }
+
+  goPrevCaption(event: any) {
+    event.preventDefault();
+    this.$emit("prev-caption", this.index);
   }
 
-  onKeyDown(event: Event) {
-    clearTimeout(this.typingTimer);
+  goNextCaption(event: any) {
+    event.preventDefault();
+    this.$emit("next-caption", this.index);
   }
 
-  doneTyping() {
-    alert("done typing");
-    // this.spellCheck(id);
+  togglePlay(event: any) {
+    event.preventDefault();
+    this.$emit("toggle-play");
   }
 
   onBlur(event: Event) {
@@ -90,7 +107,7 @@ export default class CaptionBar extends Vue {
 
   spellCheck(id: string) {
     const inputDiv = document.querySelector(`#${id}`) as HTMLDivElement;
-    const inputRawText = inputDiv.innerHTML.replace(/ class="wrong"/g, "");
+    const inputRawText = inputDiv.innerHTML.replace(/ style="color:#ff0000;"/g, "").replace(/ color="#ff0000"/g, "");
     const inputWords = this.getWordsOfInput(inputRawText);
     const answerWords = this.getWordsOfAnswer(this.caption.text);
 
@@ -102,10 +119,10 @@ export default class CaptionBar extends Vue {
           // good to go
           inner += inputWords[i] + " ";
         } else { // wrong
-          inner += `<span class="wrong">${inputWords[i]} </span>`;
+          inner += `<span style="color:#ff0000;">${inputWords[i]} </span>`; // class="wrong"
         }
       } else { // wrong
-        inner += `<span class="wrong">${inputWords[i]} </span>`;
+        inner += `<span style="color:#ff0000;>${inputWords[i]} </span>`; // class="wrong"
       }
     }
     inputDiv.innerHTML = inner;
@@ -230,24 +247,6 @@ export default class CaptionBar extends Vue {
   width: 100%;
   border: 1px solid lightseagreen;
 }
-
-.wrong {
-  color: red;
-}
-
-/* h1 {
-  font-size: 4em;
-  text-align: center;
-  color: transparent;
-  text-shadow: #111 0 0 15px;
-  transition: 0.4s;
-  font-family: HelveticaNeue;
-  
-  &:hover {
-    color: #111;
-    text-shadow: none;
-  }
-} */
 
 .caption-bar__input{
   width: 100%;

@@ -1,5 +1,7 @@
 <template>
-  <div class="dictation">
+  <div
+    class="dictation"
+  >
     <transition name="fade">
       <div v-if="showSettingsModal">
         <settings
@@ -21,9 +23,13 @@
           <div v-for="(line, index) in captionLines" :key="index">
             <caption-bar
               :caption="line"
+              :index="index"
               :isActive="isCaptionActive(index)"
               :isCaptionBlur="isCaptionBlur"
               @caption-click="onCaptionClick"
+              @prev-caption="goPrevCaption"
+              @next-caption="goNextCaption"
+              @toggle-play="togglePlay"
             ></caption-bar>
           </div>
         </div>
@@ -48,14 +54,16 @@ import { Caption } from '../types/Caption';
 
 export default class Dictation extends Vue {
   captionLines: Caption[] = [];
+  arrayStartTimeMs: number[] = [];
   videoUrl = "";
   videoId!: string; // "H14bBuluwB8", "8KkKuTCFvzI", "1ALfKWG2nmw" (length: 11)
   videoLangCode: string | null = null;
   videoWidgetUrl!: string; // = `https://www.youtube.com/embed/${this.videoId}?enablejsapi=1`;
   player!: any;
   iframeWindow!: any; // the source "window" that will emit the "message" events
-  currentStatus!: YT.PlayerState;
+  currentState!: YT.PlayerState;
   currentTime: number | null = null;
+  currentIndex = 0; // current caption index
   lastTimeUpdate = 0; // compare against new updates
   isCaptionLoading = false;
   showSettingsModal = false;
@@ -96,8 +104,12 @@ export default class Dictation extends Vue {
     })
     .then(response => {
       this.captionLines = response.data;
+      this.arrayStartTimeMs = this.captionLines.map(item => item.startTimeMs);
     })
-    .catch(err => console.log(err.message))
+    .catch(err => {
+      console.log(err.message);
+      // do something (elegant fail)
+    })
     .finally(() => {
       this.isCaptionLoading = false;
     })
@@ -147,27 +159,88 @@ export default class Dictation extends Vue {
       ) {
         var time = Math.ceil(data.info.currentTime * 100) * 10;
         if (time !== this.lastTimeUpdate) {
-          // update the dom, emit an event, whatever.
           this.currentTime = this.lastTimeUpdate = time;
+          if (
+            (this.currentIndex < this.captionLines.length - 1) &&
+            (this.currentTime < this.captionLines[this.currentIndex].startTimeMs ||
+            this.currentTime > this.captionLines[this.currentIndex + 1].startTimeMs)
+          ) { 
+            // time to change the currentIndex --> move focus to another caption bar
+            // maybe can configure the caption.repeat play ...
+            this.currentIndex = this.searchActiveIndex(this.currentTime);
+          }
         }
       }
     }
   }
 
-  isCaptionActive(index: number) {
-    const currentLine = this.captionLines[index];
-    if (index < this.captionLines.length - 1) {
-      return (this.currentTime)
-        && (this.currentTime >= currentLine.startTimeMs)
-        && (this.currentTime < this.captionLines[index + 1].startTimeMs);
+  togglePlay() {
+    if (this.currentState == YT.PlayerState.PLAYING) {
+      this.pauseVideo();
     } else {
-      return (this.currentTime)
-        && (this.currentTime >= currentLine.startTimeMs);
+      this.playVideo();
     }
+  }
+
+  playVideo() {
+    this.player.playVideo();
+  }
+
+  pauseVideo() {
+    this.player.pauseVideo();
+  }
+
+  onPlayerReady(evt: any) {
+    // evt.target.playVideo();
+  }
+
+  onPlayerStateChange(event: any) {
+    // console.log("Player state changed", event.target.getCurrentTime());
+    this.currentState = event.data;
+  }
+
+  isCaptionActive(index: number) {
+    return (index === this.currentIndex);
+  }
+
+  searchActiveIndex(time: number): number {
+    return this.binarySearch(this.arrayStartTimeMs, time);
+  }
+
+  binarySearch(array: number[], key: number): number {
+    return this.binarySearchR(array, key, 0, array.length - 1);
+  }
+
+  binarySearchR(array: number[], key: number, start: number, end: number): number {
+    while (end > start + 1) {
+      const half: number = start + Math.floor((end - start) / 2);
+      if (array[half] < key) {
+        start = half;
+      } else if (array[half] > key) {
+        end = half;
+      } else { // array[half] === key
+        return half as number;
+      }
+    }
+    return start;
   }
 
   onCaptionClick(timeMs: number) {
     this.player.seekTo(timeMs / 1000, true); // allowSeekAhead: boolean
+  }
+
+  goPrevCaption(index: number) {
+    if (index > 0) {
+      const timeMs = (this.captionLines[index-1]).startTimeMs;
+      this.player.seekTo(timeMs / 1000, true); // allowSeekAhead: boolean
+    }
+  }
+
+  goNextCaption(index: number) {
+    if (index < this.captionLines.length - 1) {
+      const timeMs = (this.captionLines[index+1]).startTimeMs;
+      this.player.seekTo(timeMs / 1000, true); // allowSeekAhead: boolean
+    }
   }
 
   openSettingsModal() {
@@ -184,19 +257,6 @@ export default class Dictation extends Vue {
     this.isTranslationBlur = isTranslationBlur;
   }
 
-  stopVideo() {
-    this.player.stopVideo();
-  }
-
-  onPlayerReady(evt: any) {
-    // evt.target.playVideo();
-  }
-
-  onPlayerStateChange(event: any) {
-    if (event.data == YT.PlayerState.PLAYING) {
-      // console.log("Player state changed", event.target.getCurrentTime());
-    }
-  }
 }
 </script>
 
