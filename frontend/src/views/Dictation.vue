@@ -1,15 +1,14 @@
 <template>
   <div class="dictation">
-    <div v-if="showSettingsModal">
-      <settings
-        :show="showSettingsModal"
-        :isCaptionBlurCurrent="isCaptionBlur"
-        :isTranslationBlurCurrent="isTranslationBlur"
-        :captionBlurLvlCurrent="captionBlurLvl"
-        :translationBlurLvlCurrent="translationBlurLvl"
-        @close="closeSettingsModal"
-      ></settings>
-    </div>
+    <transition name="fade">
+      <div v-if="showSettingsModal">
+        <settings
+          :isCaptionBlurCurrent="isCaptionBlur"
+          :isTranslationBlurCurrent="isTranslationBlur"
+          @close="closeSettingsModal"
+        ></settings>
+      </div>
+    </transition>
     <div class="main-container">
       <div class="player-container">
         <div id="player"></div>
@@ -24,7 +23,6 @@
               :caption="line"
               :isActive="isCaptionActive(index)"
               :isCaptionBlur="isCaptionBlur"
-              :captionBlurLvl="captionBlurLvl"
               @caption-click="onCaptionClick"
             ></caption-bar>
           </div>
@@ -63,9 +61,6 @@ export default class Dictation extends Vue {
   showSettingsModal = false;
   isCaptionBlur = true;
   isTranslationBlur = true;
-  captionBlurLvl = 2;
-  translationBlurLvl = 2;
-  lineSpacingLvl = 4;
   fonrSize = 10;
 
   async mounted() {
@@ -182,15 +177,11 @@ export default class Dictation extends Vue {
   closeSettingsModal(
     isCaptionBlur: boolean,
     isTranslationBlur: boolean,
-    captionBlurLvl: number,
-    translationBlurLvl: number,
   ) {
     // applied the changed setting
     this.showSettingsModal = false;
     this.isCaptionBlur = isCaptionBlur;
     this.isTranslationBlur = isTranslationBlur;
-    this.captionBlurLvl = captionBlurLvl;
-    this.translationBlurLvl = translationBlurLvl;
   }
 
   stopVideo() {
@@ -208,10 +199,12 @@ export default class Dictation extends Vue {
   }
 }
 </script>
-<style>
+
+<style lang="scss">
 .dictation {
   text-align: center;
 }
+
 .main-container {
   display: flex;
   flex-direction: row;
@@ -220,10 +213,21 @@ export default class Dictation extends Vue {
   height: 700px;
   background-color: #F3F1F5;
 }
+
 .captions-container {
   height: 600px;
   padding: 10px;
   background-color: #FDE49C;
   overflow: auto;
+}
+
+.fade-enter-to, .fade-leave-from {
+  opacity: 1;
+  transition: opacity .5s;
+}
+
+.fade-enter-from, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transition: opacity .5s;
 }
 </style>
