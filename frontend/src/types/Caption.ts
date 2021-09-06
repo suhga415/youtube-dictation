@@ -3,6 +3,7 @@ export type Caption = {
   [key: string]: string | number;
   
   text: string;
+  translation: string;
   startTimeMs: number;
   endTimeMs: number;
 };

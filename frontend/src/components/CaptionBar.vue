@@ -8,6 +8,11 @@
       v-bind:class="{ 'caption-bar__answer--blur': isCaptionBlur }"
     >{{ caption.text }}
     </div>
+    <div
+      class="caption-bar__answer"
+      v-bind:class="{ 'caption-bar__answer--blur': isTranslationBlur }"
+    >{{ caption.translation }}
+    </div>
     <div contenteditable="true"
       :id="'captionInput'+index"
       ref="captionInput"
@@ -39,6 +44,7 @@ export default class CaptionBar extends Vue {
   @Prop() caption!: Caption;
   @Prop() isActive!: boolean;
   @Prop() isCaptionBlur!: boolean;
+  @Prop() isTranslationBlur!: boolean;
   @Prop() isSpellCheck!: boolean;
   @Prop() index!: number;
 
@@ -50,13 +56,25 @@ export default class CaptionBar extends Vue {
   }
 
   @Watch('isActive')
-  onChangeActive(value: boolean) {
+  onActiveChange(value: boolean) {
     if (this.isActive) {
       // TODO: move it to the center
       const input = document.getElementById(`captionInput${this.index}`);
       if (input) {
         input.focus();
       }
+    }
+  }
+
+  @Watch('isSpellCheck')
+  onSpellCheckChange(value: boolean) {
+    const id = `captionInput${this.index}`
+    if (value === true) {
+      this.spellCheck(id);
+    } else {
+      const inputDiv = document.querySelector(`#${id}`) as HTMLDivElement;
+      const content = inputDiv.innerText;
+      inputDiv.innerHTML = content;
     }
   }
 
@@ -94,8 +112,10 @@ export default class CaptionBar extends Vue {
   }
 
   onBlur(event: Event) {
-    const id = (event.target as Element).id
-    this.spellCheck(id);
+    if (this.isSpellCheck) {
+      const id = (event.target as Element).id
+      this.spellCheck(id);
+    }
   }
 
   onSpace(event: Event) {

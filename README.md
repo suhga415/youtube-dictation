@@ -4,7 +4,7 @@
 
 ### Priority 1
 - [x] Load captions
-- [ ] Load translations
+- [x] Load translations
 - [x] Load video as a widget
 - [x] Video selection bar (input)
 - [ ] Loading spinner / indicator
@@ -23,10 +23,11 @@
   - [ ] toggle play once/repeat: alt + Enter
 - Settings (pop up)
   - [x] soft transition on open/close
-  - [x] blur toggle
-  - ~~[ ] blur level~~
+  - [x] blur toggle - caption
+  - [x] blur toggle - translation
+  - [x] toggle spell check
   - [ ] font size change
-  - [ ] toggle spell check
+  - ~~[ ] blur level~~
 - [ ] Design & Styling...
 
 ### Priority 2

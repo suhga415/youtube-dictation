@@ -20,6 +20,13 @@
           {{ item.langName }}
         </option>
       </select>
+      <label for="yt-transl">Translation: </label>
+      <select v-model="videoTranslCode" id="yt-transl">
+        <option disabled value="">Please select one</option>
+        <option v-for="(item, index) in captionTracks" :key="index" :value="item.langCode">
+          {{ item.langName }}
+        </option>
+      </select>
       <button @click="onClickSubmit">Submit</button>
     </div>
 
@@ -37,6 +44,7 @@ export default class App extends Vue {
   videoUrl = "";
   videoId!: string; // "H14bBuluwB8", "8KkKuTCFvzI", "1ALfKWG2nmw" (length: 11)
   videoLangCode: string | null = null;
+  videoTranslCode: string | null = null;
   isCaptionTrackLoading = false;
 
   async onUrlInputChange(event: any) {
@@ -86,6 +94,7 @@ export default class App extends Vue {
       params: {
         id: this.videoId,
         lang: this.videoLangCode,
+        transl: this.videoTranslCode,
       }
     })
   }
