@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="dictation"
-  >
+  <div class="dictation">
     <transition name="fade">
       <div v-if="showSettingsModal">
         <settings
@@ -14,10 +12,12 @@
     </transition>
     <div class="main-container">
       <div class="player-container">
-        <div id="player"></div>
+        <loading-spinner v-if="isVideoPlayerLoading"></loading-spinner>
+        <div v-if="!isVideoPlayerLoading" id="player"></div>
       </div>
       <div class="captions-settings">
-        <div class="settings-button-container">
+        <loading-spinner v-if="isCaptionLoading"></loading-spinner>
+        <div v-if="!isCaptionLoading" class="settings-button-container">
           <button @click="openSettingsModal">Settings</button>
         </div>
         <div class="captions-container" v-if="captionLines.length">
@@ -43,15 +43,17 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { Caption } from '../types/Caption';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import CaptionBar from '@/components/CaptionBar.vue';
 import Settings from '@/components/Settings.vue';
 import axios from 'axios';
-import { Caption } from '../types/Caption';
 
 @Options({
   components: {
     CaptionBar,
     Settings,
+    LoadingSpinner,
   },
 })
 
@@ -70,6 +72,7 @@ export default class Dictation extends Vue {
   currentIndex = 0; // current caption index
   lastTimeUpdate = 0; // compare against new updates
   isCaptionLoading = false;
+  isVideoPlayerLoading = false;
   showSettingsModal = false;
   isCaptionBlur = true;
   isTranslationBlur = true;
@@ -118,8 +121,6 @@ export default class Dictation extends Vue {
       let captions = captionsResponse.data;
       let translations = translationResponse.data;
 
-      console.log(captions.length, translations.length);
-
       let i = 0;
       captions.forEach((item: any) => {
         // match each caption with the correct translation
@@ -135,7 +136,6 @@ export default class Dictation extends Vue {
         while (!done) {
           let overlap = (end - start) / length;
           if (item.endTimeMs <= translations[i].endTimeMs) {
-            console.log(`done here (1): ${item.text} - ${tl}, coverage: ${overlap}`);
             // 1. 이번 칸이 현재 번역칸보다 먼저 끝남. 즉, 다음 번역칸을 볼 필요가 없음. 이번 칸은 끝났으니 다음 item으로. 
             if (overlap <= 0) {
               // 1-1. 겹치는 부분이 하나도 없을 경우 --> 번역이 존재하지 않는 상태.
@@ -152,7 +152,6 @@ export default class Dictation extends Vue {
               // 2-1. 충분한 커버리지 --> 이번 칸은 완료했으니 다음 item으로. 다음 item은 현재 번역칸과 겹칠 일이 없으니, 번역칸도 다음으로 넘김.
               item["translation"] = tl;
               done = true;
-              console.log(`done here (2): ${item.text} - ${tl}, coverage: ${overlap}`);
               i ++;
             } else if (overlap <= 0) {
               // 2-2. 겹치는 부분이 하나도 없을 경우
@@ -167,7 +166,6 @@ export default class Dictation extends Vue {
                 i = translations.length; // 또는 i ++;
                 item["translation"] = "";
                 done = true;
-                console.log(`done here (3): ${item.text} - ${tl}, coverage: ${overlap}`);
               }
             } else {
               // 2-3. 커버리지가 충분하지 않을 경우. 다음 번역칸과 이어줘야 할 수도 있다.
@@ -180,7 +178,6 @@ export default class Dictation extends Vue {
                 // 다음 번역칸이 없거나, 있어도 커버리지가 없음 --> 이대로 완료하고 다음 번역칸으로 넘어감.
                 item["translation"] = tl;
                 done = true;
-                console.log(`done here (4): ${item.text} - ${tl}, coverage: ${overlap}`);
                 i++;
               }
             }
@@ -195,10 +192,6 @@ export default class Dictation extends Vue {
       // do something (elegant fail)
     }
     this.isCaptionLoading = false;
-  }
-
-  async fetchTranslation() {
-    this.isCaptionLoading = true;
   }
 
   prepareYoutubeIFrameAPI() {
@@ -217,6 +210,7 @@ export default class Dictation extends Vue {
   }
 
   initYoutubePlayer() {
+    this.isVideoPlayerLoading = true;
     this.player = new YT.Player('player', {
       height: 360,
       width: 640,
@@ -230,6 +224,7 @@ export default class Dictation extends Vue {
     // Listen to events triggered by postMessage
     this.iframeWindow = this.player.getIframe().contentWindow;
     window.addEventListener("message", this.handlePostMessage);
+    this.isVideoPlayerLoading = false;
   }
 
   handlePostMessage(event: any) {

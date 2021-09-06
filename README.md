@@ -7,7 +7,7 @@
 - [x] Load translations
 - [x] Load video as a widget
 - [x] Video selection bar (input)
-- [ ] Loading spinner / indicator
+- [x] Loading spinner / indicator
 - Sync
   - [x] video --> caption (focus)
   - [x] caption --> video (focus)
@@ -43,4 +43,5 @@
 - [ ] 404 Not Found page
 
 ### Requirements / Bugs
-- [ ] (일시정지 상태에서) 가장 첫 캡션을 클릭했을 때 active 표시가 되지 않음.
+- [ ] (일시정지 상태에서) 가장 첫 캡션을 클릭했을 때 active 표시가 되지 않음
+- [ ] 영상 재생/일시정지 숏컷 - 영 시원치 않음...
