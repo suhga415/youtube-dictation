@@ -7,6 +7,7 @@
         <settings
           :isCaptionBlurCurrent="isCaptionBlur"
           :isTranslationBlurCurrent="isTranslationBlur"
+          :isSpellCheckCurrent="isSpellCheck"
           @close="closeSettingsModal"
         ></settings>
       </div>
@@ -26,6 +27,7 @@
               :index="index"
               :isActive="isCaptionActive(index)"
               :isCaptionBlur="isCaptionBlur"
+              :isSpellCheck="isSpellCheck"
               @caption-click="onCaptionClick"
               @prev-caption="goPrevCaption"
               @next-caption="goNextCaption"
@@ -69,6 +71,7 @@ export default class Dictation extends Vue {
   showSettingsModal = false;
   isCaptionBlur = true;
   isTranslationBlur = true;
+  isSpellCheck = true;
   fonrSize = 10;
 
   async mounted() {
@@ -250,11 +253,13 @@ export default class Dictation extends Vue {
   closeSettingsModal(
     isCaptionBlur: boolean,
     isTranslationBlur: boolean,
+    isSpellCheck: boolean,
   ) {
     // applied the changed setting
     this.showSettingsModal = false;
     this.isCaptionBlur = isCaptionBlur;
     this.isTranslationBlur = isTranslationBlur;
+    this.isSpellCheck = isSpellCheck;
   }
 
 }

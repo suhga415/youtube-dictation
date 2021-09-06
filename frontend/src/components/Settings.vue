@@ -20,6 +20,15 @@
         />
         <div class="settings_item_text">Translation blur: {{ translationBlur }}</div>
       </div>
+      <div class="settings_item">
+        <Toggle
+          v-model="isSpellCheck"
+          class="toggle-theme"
+          onLabel="On"
+          offLabel="Off"
+        />
+        <div class="settings_item_text">Do spell check: {{ isSpellCheck }}</div>
+      </div>
       <div class="settings_item"></div>
       <div class="settings_item"></div>
       <div class="settings_item"></div>
@@ -41,16 +50,18 @@ import Toggle from '@vueform/toggle';
 export default class Settings extends Vue {
   @Prop() isCaptionBlurCurrent!: boolean;
   @Prop() isTranslationBlurCurrent!: boolean;
+  @Prop() isSpellCheckCurrent!: boolean;
   @Prop() fontSizeCurrent!: number;
-  @Prop() spellCheckCurrent!: boolean;
 
   captionBlur = true;
   translationBlur = true;
+  isSpellCheck = true;
   fonrSize = 10;
 
   mounted() {
     this.captionBlur = this.isCaptionBlurCurrent;
     this.translationBlur = this.isTranslationBlurCurrent;
+    this.isSpellCheck = this.isSpellCheckCurrent;
   }
 
   closeSettingsModal() {
@@ -58,6 +69,7 @@ export default class Settings extends Vue {
     this.$emit('close',
       this.captionBlur,
       this.translationBlur,
+      this.isSpellCheck,
     );
   }
 }

@@ -39,6 +39,7 @@ export default class CaptionBar extends Vue {
   @Prop() caption!: Caption;
   @Prop() isActive!: boolean;
   @Prop() isCaptionBlur!: boolean;
+  @Prop() isSpellCheck!: boolean;
   @Prop() index!: number;
 
   typingTimer!: any;          // timer identifier
@@ -98,19 +99,28 @@ export default class CaptionBar extends Vue {
   }
 
   onSpace(event: Event) {
-    const id = (event.target as Element).id
-    var restore = this.saveCaretPosition(id);
-    this.spellCheck(id);
-    restore(this);
-    // this.setCaretLast(id);
+    if (this.isSpellCheck) {
+      const id = (event.target as Element).id
+      var restore = this.saveCaretPosition(id);
+      this.spellCheck(id);
+      restore(this);
+      // this.setCaretLast(id);
+    }
   }
 
   spellCheck(id: string) {
     const inputDiv = document.querySelector(`#${id}`) as HTMLDivElement;
-    const inputRawText = inputDiv.innerHTML.replace(/ style="color:#ff0000;"/g, "").replace(/ color="#ff0000"/g, "");
+    const inputRawText = inputDiv.innerHTML
+      .replace(/<span style="color:#ff0000;">/gi, '')
+      .replace(/<\/?span>/gi, '')
+      .replace(/<font color="#ff0000">/gi, '')
+      .replace(/<\/font>/gi, '')
+      .replace(/&nbsp;/gi, '')
+      .replace(/<br\/?>/gi, '');
     const inputWords = this.getWordsOfInput(inputRawText);
     const answerWords = this.getWordsOfAnswer(this.caption.text);
 
+    inputDiv.innerHTML = "";
     let inner = "";
     for (let i = 0; i < inputWords.length; i++) {
       if (i < answerWords.length) {
@@ -172,11 +182,11 @@ export default class CaptionBar extends Vue {
     var len = range.toString().length;
 
     return function restore(component: CaptionBar){
-        var pos = component.getTextNodeAtPosition(context, len);
-        selection.removeAllRanges();
-        var range = new Range();
-        range.setStart(pos.node ,pos.position);
-        selection.addRange(range);
+      var pos = component.getTextNodeAtPosition(context, len);
+      selection.removeAllRanges();
+      var range = new Range();
+      range.setStart(pos.node, pos.position);
+      selection.addRange(range);
     }
   }
 
@@ -251,4 +261,9 @@ export default class CaptionBar extends Vue {
 .caption-bar__input{
   width: 100%;
 }
+
+.wrong {
+  color: red;
+}
+
 </style>

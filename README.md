@@ -24,7 +24,7 @@
 - Settings (pop up)
   - [x] soft transition on open/close
   - [x] blur toggle
-  ~~- [ ] blur level~~
+  - ~~[ ] blur level~~
   - [ ] font size change
   - [ ] toggle spell check
 - [ ] Design & Styling...
@@ -42,4 +42,4 @@
 - [ ] 404 Not Found page
 
 ### Requirements / Bugs
-- (일시정지 상태에서) 가장 첫 캡션을 클릭했을 때 active 표시가 되지 않음.
+- [ ] (일시정지 상태에서) 가장 첫 캡션을 클릭했을 때 active 표시가 되지 않음.
