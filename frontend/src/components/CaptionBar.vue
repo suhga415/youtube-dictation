@@ -278,8 +278,8 @@ export default class CaptionBar extends Vue {
   border: 1px solid lightseagreen;
 }
 
-.caption-bar__input{
-  width: 100%;
+.caption-bar__input:focus {
+  outline: none;
 }
 
 .wrong {

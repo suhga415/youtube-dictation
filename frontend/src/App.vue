@@ -37,7 +37,7 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 import { Track } from './types/Track';
-import axios from 'axios';
+import CaptionService from './services/CaptionService';
 
 export default class App extends Vue {
   captionTracks: Track[] = [];
@@ -72,20 +72,8 @@ export default class App extends Vue {
 
   async fetchCaptionTracks() {
     this.isCaptionTrackLoading = true;
-    await axios.get('http://localhost:4000/caption-tracks', {
-      params: {
-        videoId: this.videoId,
-      }
-    })
-    .then(response => {
-      this.captionTracks = response.data;
-    })
-    .catch(err => {
-      console.log(err.message);
-    })
-    .finally(() => {
-      this.isCaptionTrackLoading = false;
-    })
+    this.captionTracks = await CaptionService.fetchCaptionTracks(this.videoId);
+    this.isCaptionTrackLoading = false;
   }
 
   onClickSubmit() {
