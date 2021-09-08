@@ -29,8 +29,8 @@
         />
         <div class="settings_item_text">Do spell check: {{ isSpellCheck }}</div>
       </div>
-      <div>
-        <Slider 
+      <div class="settings_item_slider">
+        <Slider
           v-model="fontSize"
           class="slider-theme"
           :min="12"
@@ -130,16 +130,22 @@ export default class Settings extends Vue {
 }
 
 .toggle-theme {
-  --toggle-bg-on: #42b983;
-  --toggle-border-on: #42b983;
+  --toggle-bg-on: #91C788;
+  --toggle-border-on: #91C788;
   --toggle-text-on: white;
   --toggle-text-off: #374151;
   margin-right: 10px;
 }
 
-.settings-slider {
+.settings_item_slider {
   height: 30px;
-  margin: 40px 0px 20px 0px;
+  margin-top: 60px;
+}
+
+.slider-theme {
+  --slider-connect-bg: #91C788;
+  --slider-tooltip-bg: #91C788;
+  --slider-handle-ring-color: #648b5d;
 }
 
 </style>

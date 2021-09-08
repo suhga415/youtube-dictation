@@ -4,30 +4,37 @@
     <router-link to="/about">About</router-link>
 
     <div class="video-select-bar">
-      <label for="yt-url">Video URL: </label>
-      <input
-        v-model="videoUrl"
-        type="text"
-        id="yt-url"
-        name="yt-url"
-        placeholder="youtube.com/watch?v=1NC-cbrEB4U"
-        @input="onUrlInputChange"
-      >
-      <label for="yt-lang">Language: </label>
-      <select v-model="videoLangCode" id="yt-lang">
-        <option disabled value="">Please select one</option>
-        <option v-for="(item, index) in captionTracks" :key="index" :value="item.langCode">
-          {{ item.langName }}
-        </option>
-      </select>
+      <div class="video-select-bar_item">
+        <label for="yt-url">Video URL: </label>
+        <input
+          class="url-input-bar"
+          v-model="videoUrl"
+          type="text"
+          id="yt-url"
+          name="yt-url"
+          placeholder="youtube.com/watch?v=1NC-cbrEB4U"
+          @input="onUrlInputChange"
+        >
+      </div>
+      <div class="video-select-bar_item">
+        <label for="yt-lang">Language: </label>
+        <select class="language-select-bar" v-model="videoLangCode" id="yt-lang">
+          <option disabled value="">Please select one</option>
+          <option v-for="(item, index) in captionTracks" :key="index" :value="item.langCode">
+            {{ item.langName }}
+          </option>
+        </select>
+      </div>
+      <div class="video-select-bar_item">
       <label for="yt-transl">Translation: </label>
-      <select v-model="videoTranslCode" id="yt-transl">
-        <option disabled value="">Please select one</option>
-        <option v-for="(item, index) in captionTracks" :key="index" :value="item.langCode">
-          {{ item.langName }}
-        </option>
-      </select>
-      <button @click="onClickSubmit">Submit</button>
+        <select class="language-select-bar" v-model="videoTranslCode" id="yt-transl">
+          <option disabled value="">Please select one</option>
+          <option v-for="(item, index) in captionTracks" :key="index" :value="item.langCode">
+            {{ item.langName }}
+          </option>
+        </select>
+      </div>
+      <button class="video-select-bar_button" @click="onClickSubmit">SUMBIT</button>
     </div>
 
   </div>
@@ -96,6 +103,15 @@ export default class App extends Vue {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height: 100%;
+  /* background-color: darkblue; */
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
 #nav {
@@ -108,11 +124,46 @@ export default class App extends Vue {
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+  color: #32a9ca;
 }
 
 .video-select-bar {
-  background-color: #9DDAC6;
+  /* background-color: #9DDAC6; */
   height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-select-bar_item {
+  margin: 0 20px;
+}
+
+.url-input-bar {
+  width: 300px;
+  height: 20px;
+  outline: none;
+}
+
+.language-select-bar {
+  height: 20px;
+  outline: none;
+}
+
+.video-select-bar_button {
+  border: none;
+  padding: 10px;
+  width: 120px;
+  overflow: visible;
+  background: #276678;
+  border-radius: 8px;
+  font: inherit;
+  color: white;
+  font-size: 15px;
+  line-height: normal;
+}
+
+.video-select-bar_button:hover {
+  background-color: #1687A7;
 }
 </style>

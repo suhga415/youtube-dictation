@@ -19,8 +19,8 @@
       <div class="captions-settings">
         <loading-spinner v-if="isCaptionLoading"></loading-spinner>
         <div v-if="!isCaptionLoading" class="settings-button-container">
-          <button @click="openSettingsModal">Settings</button>
-          <button @click="downloadCaptions">Download Captions</button>
+          <button class="dication-button dication-button__settings" @click="openSettingsModal">Settings</button>
+          <button class="dication-button dication-button__download" @click="downloadCaptions">Download Captions</button>
         </div>
         <div class="captions-container" v-if="captionLines.length">
           <div v-for="(line, index) in captionLines" :key="index">
@@ -281,10 +281,10 @@ export default class Dictation extends Vue {
         ? `${hh}:${mm}:${ss} ${caption.text.replace(/\n/gi, " ")}\n         ${caption.translation.replace(/\n/gi, " ")}\n\n`
         : `${mm}:${ss} ${caption.text.replace(/\n/gi, " ")}\n      ${caption.translation.replace(/\n/gi, " ")}\n\n`;
     });
-    const blob = new Blob([content], {type: 'application/pdf'});
+    const blob = new Blob([content], {type: 'text/plain'});
     const downloadLink = document.createElement("a");
     downloadLink.href = URL.createObjectURL(blob);
-    downloadLink.download = "captions.pdf";
+    downloadLink.download = "captions.txt";
     document.body.appendChild(downloadLink);
     downloadLink.click(); // click the link to download
     document.body.removeChild(downloadLink); // remove the link
@@ -304,6 +304,7 @@ export default class Dictation extends Vue {
 <style lang="scss">
 .dictation {
   text-align: center;
+  height: 80%;
 }
 
 .main-container {
@@ -311,15 +312,43 @@ export default class Dictation extends Vue {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  height: 700px;
+  height: 100%;
+  width: 100%;
   background-color: #F3F1F5;
+}
+
+.video-container {
+  margin-right: 10px;
 }
 
 .captions-container {
   height: 600px;
-  padding: 10px;
-  background-color: #FDE49C;
+  padding: 20px;
+  margin-left: 10px;
+  background-color: #F3F1F5;
   overflow: auto;
+}
+
+.dication-button {
+  border: none;
+  margin: 15px;
+  padding: 10px;
+  width: 120px;
+  overflow: visible;
+  background: #276678;
+  border-radius: 8px;
+  font: inherit;
+  color: white;
+  font-size: 15px;
+  line-height: normal;
+}
+
+.dication-button:hover {
+  background-color: #1687A7;
+}
+
+.dication-button__download {
+  width: 200px;
 }
 
 .fade-enter-to, .fade-leave-from {

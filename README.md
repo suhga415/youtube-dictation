@@ -8,6 +8,7 @@
 - [x] Load video as a widget
 - [x] Video selection bar (input)
 - [x] Loading spinner / indicator
+- [ ] About(Guide) page
 - [ ] Keyboard shortcut guide
 - [x] Download captions
 - Sync
@@ -28,7 +29,7 @@
   - [x] blur toggle - caption
   - [x] blur toggle - translation
   - [x] toggle spell check
-  - [ ] font size change
+  - [x] font size change
   - ~~[ ] blur level~~
 - [ ] Design & Styling...
 

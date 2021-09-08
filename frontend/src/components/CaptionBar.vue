@@ -133,9 +133,9 @@ export default class CaptionBar extends Vue {
   spellCheck(id: string) {
     const inputDiv = document.querySelector(`#${id}`) as HTMLDivElement;
     const inputRawText = inputDiv.innerHTML
-      .replace(/<span style="color:#ff0000;">/gi, '')
+      .replace(/<span style="color:#F05454;">/gi, '')
       .replace(/<\/?span>/gi, '')
-      .replace(/<font color="#ff0000">/gi, '')
+      .replace(/<font color="#F05454">/gi, '')
       .replace(/<\/font>/gi, '')
       .replace(/&nbsp;/gi, '')
       .replace(/<br\/?>/gi, '');
@@ -151,10 +151,10 @@ export default class CaptionBar extends Vue {
           // good to go
           inner += inputWords[i] + " ";
         } else { // wrong
-          inner += `<span style="color:#ff0000;">${inputWords[i]} </span>`; // class="wrong"
+          inner += `<span style="color:#F05454;">${inputWords[i]} </span>`; // class="wrong"
         }
       } else { // wrong
-        inner += `<span style="color:#ff0000;>${inputWords[i]} </span>`; // class="wrong"
+        inner += `<span style="color:#F05454;>${inputWords[i]} </span>`; // class="wrong"
       }
     }
     inputDiv.innerHTML = inner;
@@ -253,20 +253,21 @@ export default class CaptionBar extends Vue {
   /* height: 50px; */
   width: 500px;
   text-align: left;
-  padding: 5px 10px;
+  padding: 10px 10px;
   margin-bottom: 20px;
   border-radius: 7px;
-  background-color: #F3F1F5;
+  background-color: #D3E0EA;
 }
 
 .caption-bar--active {
-  background-color: #64C9CF;
+  background-color: rgb(113, 193, 207);
+  // color: white;
 }
 
 .caption-bar__answer--blur {
   margin-bottom: 5px;
   color: transparent;
-  text-shadow: 0 0 10px #111;
+  // text-shadow: 0 0 12px #111;
   transition: 0.2s;
 }
 
@@ -277,7 +278,9 @@ export default class CaptionBar extends Vue {
 
 .caption-bar__input {
   width: 100%;
-  border: 1px solid lightseagreen;
+  height: 25px;
+  border: 1px solid #F6F5F5;
+  background-color: #F3F1F5;
 }
 
 .caption-bar__input:focus {
