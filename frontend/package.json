@@ -4,24 +4,27 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "start": "npm run build"
   },
   "dependencies": {
+    "@vue/cli-service": "~4.5.0",
     "@vueform/slider": "^2.0.4",
     "@vueform/toggle": "^2.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "dotenv": "^10.0.0",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
+    "@types/node": "^16.7.13",
     "@types/youtube": "^0.0.45",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
     "babel-loader": "^8.2.2",
     "node-sass": "^6.0.1",

@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv_1 = __importDefault(require("dotenv"));
+// import dotenv from 'dotenv';
 const express_1 = __importDefault(require("express"));
 const axios_1 = __importDefault(require("axios"));
 const cors_1 = __importDefault(require("cors"));
 const xml_js_1 = __importDefault(require("xml-js"));
-dotenv_1.default.config();
+// dotenv.config();
 // let lang = "en";
 // let videoId = ""; // H14bBuluwB8
 // const url = `https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
@@ -25,9 +25,18 @@ dotenv_1.default.config();
 const app = express_1.default();
 const PORT = process.env.PORT || 4000;
 // app.use(bodyParser.urlencoded({extended: true}));
-app.use(cors_1.default({
-    origin: ['http://localhost:8080']
-}));
+const corsOptions = {
+    origin: '*',
+    credentials: true,
+    optionSuccessStatus: 200,
+};
+app.use(cors_1.default(corsOptions));
+// {
+//   origin: [
+//     'http://localhost:8080',
+//     'https://youtube-dictation-frontend.herokuapp.com/'
+//   ]
+// }
 const fetchCaptions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const lang = req.query.langCode;
     const videoId = req.query.videoId;

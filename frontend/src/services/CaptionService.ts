@@ -1,16 +1,21 @@
 import { Track } from '../types/Track';
 import { Caption } from '../types/Caption';
+import { config } from '../config';
 import axios from 'axios';
 
 export default class CaptionService {
 
-  static CAPTION_URL: string = "http://localhost:4000/";
-  static CAPTION_TRACK_URL: string = "http://localhost:4000/caption-tracks";
+  static CAPTION_URL: string = config.CAPTION_URL;
+  static CAPTION_TRACK_URL: string = config.CAPTION_TRACKS_URL;
 
   static async fetchCaptionTracks(videoId: string) {
     let captionTracks: Track[] = [];
     try {
       const response = await axios.get(this.CAPTION_TRACK_URL, {
+        headers: {
+          'Access-Control-Allow-Origin' : '*',
+          'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+        },
         params: {
           videoId: videoId,
         }
@@ -27,6 +32,10 @@ export default class CaptionService {
     let arrayStartTimeMs: number[] = [];
     try {
       const captionsResponse = await axios.get(this.CAPTION_URL, {
+        headers: {
+          'Access-Control-Allow-Origin' : '*',
+          'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+        },
         params: {
           videoId: videoId,
           langCode: videoLangCode,

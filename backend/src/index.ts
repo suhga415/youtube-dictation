@@ -1,10 +1,10 @@
-import dotenv from 'dotenv';
 import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
 import converter from 'xml-js';
 import { Caption, Track } from './types';
-dotenv.config();
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 // let lang = "en";
 // let videoId = ""; // H14bBuluwB8
@@ -15,9 +15,20 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // app.use(bodyParser.urlencoded({extended: true}));
-app.use(cors({
-  origin: ['http://localhost:8080']
-}));
+
+const corsOptions = {
+  origin: '*', 
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+}
+
+app.use(cors(corsOptions));
+// {
+//   origin: [
+//     'http://localhost:8080',
+//     'https://youtube-dictation-frontend.herokuapp.com/'
+//   ]
+// }
 
 const fetchCaptions = async (req, res) => {
   const lang = req.query.langCode;
