@@ -9,7 +9,7 @@
 - [x] Video selection bar (input)
 - [x] Loading spinner / indicator
 - [ ] Keyboard shortcut guide
-- [ ] Download captions
+- [x] Download captions
 - Sync
   - [x] video --> caption (focus)
   - [x] caption --> video (focus)
@@ -46,5 +46,5 @@
 
 ### Requirements / Bugs
 - [ ] (일시정지 상태에서) 가장 첫 캡션을 클릭했을 때 active 표시가 되지 않음
-- [ ] 영상 재생/일시정지 숏컷 - 영 시원치 않음...
+- [ ] 영상 재생/일시정지 숏컷이 영 시원치 않음...
 - [x] input focus 효과 없애기 (박스 테두리)

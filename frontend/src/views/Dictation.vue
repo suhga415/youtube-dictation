@@ -19,6 +19,7 @@
         <loading-spinner v-if="isCaptionLoading"></loading-spinner>
         <div v-if="!isCaptionLoading" class="settings-button-container">
           <button @click="openSettingsModal">Settings</button>
+          <button @click="downloadCaptions">Download Captions</button>
         </div>
         <div class="captions-container" v-if="captionLines.length">
           <div v-for="(line, index) in captionLines" :key="index">
@@ -263,6 +264,35 @@ export default class Dictation extends Vue {
     this.isCaptionBlur = isCaptionBlur;
     this.isTranslationBlur = isTranslationBlur;
     this.isSpellCheck = isSpellCheck;
+  }
+
+  downloadCaptions() {
+    let content = "";
+    this.captionLines.map(caption => {
+      const {h, m, s} = this.getHourMinSec(caption.startTimeMs);
+      const hh = (h < 10) ? `0${h}` : `${h}`;
+      const mm = (m < 10) ? `0${m}` : `${m}`;
+      const ss = (s < 10) ? `0${s}` : `${s}`;
+      content += (h > 0) 
+        ? `${hh}:${mm}:${ss} ${caption.text.replace(/\n/gi, " ")}\n         ${caption.translation.replace(/\n/gi, " ")}\n\n`
+        : `${mm}:${ss} ${caption.text.replace(/\n/gi, " ")}\n      ${caption.translation.replace(/\n/gi, " ")}\n\n`;
+    });
+    const blob = new Blob([content], {type: 'application/pdf'});
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = "captions.pdf";
+    document.body.appendChild(downloadLink);
+    downloadLink.click(); // click the link to download
+    document.body.removeChild(downloadLink); // remove the link
+  }
+
+  getHourMinSec(milliSeconds: number) {
+    const seconds = Math.floor(milliSeconds / 1000);
+    return {
+      h: Math.floor(seconds / 3600),
+      m: Math.floor((seconds % 3600) / 60),
+      s: (seconds % 3600) % 60
+    }
   }
 }
 </script>
