@@ -6,6 +6,7 @@
           :isCaptionBlurCurrent="isCaptionBlur"
           :isTranslationBlurCurrent="isTranslationBlur"
           :isSpellCheckCurrent="isSpellCheck"
+          :fontSizeCurrent="fontSize"
           @close="closeSettingsModal"
         ></settings>
       </div>
@@ -30,6 +31,7 @@
               :isCaptionBlur="isCaptionBlur"
               :isTranslationBlur="isTranslationBlur"
               :isSpellCheck="isSpellCheck"
+              :fontSize="fontSize"
               @caption-click="onCaptionClick"
               @prev-caption="goPrevCaption"
               @next-caption="goNextCaption"
@@ -79,7 +81,7 @@ export default class Dictation extends Vue {
   isCaptionBlur = true;
   isTranslationBlur = true;
   isSpellCheck = true;
-  fonrSize = 10;
+  fontSize = 16;
 
   async mounted() {
     this.videoId = this.$route.params.id as string;
@@ -258,12 +260,14 @@ export default class Dictation extends Vue {
     isCaptionBlur: boolean,
     isTranslationBlur: boolean,
     isSpellCheck: boolean,
+    fontSize: number,
   ) {
     // applied the changed setting
     this.showSettingsModal = false;
     this.isCaptionBlur = isCaptionBlur;
     this.isTranslationBlur = isTranslationBlur;
     this.isSpellCheck = isSpellCheck;
+    this.fontSize = fontSize;
   }
 
   downloadCaptions() {

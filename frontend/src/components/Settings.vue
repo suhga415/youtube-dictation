@@ -29,7 +29,14 @@
         />
         <div class="settings_item_text">Do spell check: {{ isSpellCheck }}</div>
       </div>
-      <div class="settings_item"></div>
+      <div>
+        <Slider 
+          v-model="fontSize"
+          class="slider-theme"
+          :min="12"
+          :max="26"
+        />
+      </div>
       <div class="settings_item"></div>
       <div class="settings_item"></div>
     </div>
@@ -40,10 +47,12 @@
 import { Options, Vue } from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 import Toggle from '@vueform/toggle';
+import Slider from '@vueform/slider';
 
 @Options({
   components: {
     Toggle,
+    Slider,
   },
 })
 
@@ -56,12 +65,13 @@ export default class Settings extends Vue {
   captionBlur = true;
   translationBlur = true;
   isSpellCheck = true;
-  fonrSize = 10;
+  fontSize: number = 18;
 
   mounted() {
     this.captionBlur = this.isCaptionBlurCurrent;
     this.translationBlur = this.isTranslationBlurCurrent;
     this.isSpellCheck = this.isSpellCheckCurrent;
+    this.fontSize = this.fontSizeCurrent;
   }
 
   closeSettingsModal() {
@@ -70,6 +80,7 @@ export default class Settings extends Vue {
       this.captionBlur,
       this.translationBlur,
       this.isSpellCheck,
+      this.fontSize,
     );
   }
 }
@@ -77,6 +88,7 @@ export default class Settings extends Vue {
 
 <style lang="scss">
 @import "@vueform/toggle/themes/default.scss";
+@import "@vueform/slider/themes/default.scss";
 
 .box{
   height: 10px;

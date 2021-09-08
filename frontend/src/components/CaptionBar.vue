@@ -1,7 +1,8 @@
 <template>
   <div
     class="caption-bar"
-    v-bind:class="{ 'caption-bar--active': isActive }"
+    v-bind:style="{fontSize: fontSize + 'px'}"
+    v-bind:class="{'caption-bar--active': isActive}"
   >
     <div
       class="caption-bar__answer"
@@ -46,6 +47,7 @@ export default class CaptionBar extends Vue {
   @Prop() isCaptionBlur!: boolean;
   @Prop() isTranslationBlur!: boolean;
   @Prop() isSpellCheck!: boolean;
+  @Prop() fontSize!: number;
   @Prop() index!: number;
 
   typingTimer!: any;          // timer identifier
