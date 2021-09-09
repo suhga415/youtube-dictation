@@ -72,9 +72,9 @@ export default class Dictation extends Vue {
   player!: any;
   iframeWindow!: any; // the source "window" that will emit the "message" events
   currentState!: YT.PlayerState;
-  currentTime: number | null = null;
+  prevTime = 0; // compare against new updates
+  currentTime = 0;
   currentIndex = 0; // current caption index
-  lastTimeUpdate = 0; // compare against new updates
   isCaptionLoading = false;
   isVideoPlayerLoading = false;
   showSettingsModal = false;
@@ -82,6 +82,8 @@ export default class Dictation extends Vue {
   isTranslationBlur = true;
   isSpellCheck = true;
   fontSize = 16;
+  // repeatChecker = -1;
+  isReplay = true;
 
   async mounted() {
     this.videoId = this.$route.params.id as string;
@@ -167,16 +169,45 @@ export default class Dictation extends Vue {
         data.info.currentTime
       ) {
         var time = Math.ceil(data.info.currentTime * 100) * 10;
-        if (time !== this.lastTimeUpdate) {
-          this.currentTime = this.lastTimeUpdate = time;
+        if (time !== this.currentTime) {
+          this.prevTime = this.currentTime;
+          this.currentTime = time;
+          // console.log(this.currentTime, Math.ceil(this.captionLines[this.currentIndex].endTimeMs / 10) * 10);
+          // if (this.currentTime === Math.ceil(this.captionLines[this.currentIndex].endTimeMs / 10) * 10) {
+          //   console.log("here");
+          //   this.pauseVideo();
+          // }
           if (
             (this.currentIndex < this.captionLines.length - 1) &&
             (this.currentTime < this.captionLines[this.currentIndex].startTimeMs ||
-            this.currentTime > this.captionLines[this.currentIndex + 1].startTimeMs)
-          ) { 
+            this.currentTime >= this.captionLines[this.currentIndex + 1].startTimeMs)
+          ) {
             // time to change the currentIndex --> move focus to another caption bar
             // maybe can configure the caption.repeat play ...
-            this.currentIndex = this.searchActiveIndex(this.currentTime);
+            console.log(Math.abs(this.currentTime - this.prevTime))
+            if (Math.abs(this.currentTime - this.prevTime) <= 300) { // 0.3 sec
+              if (this.isReplay) {
+                this.player.seekTo(this.captionLines[this.currentIndex].startTimeMs / 1000, true);
+              } else {
+                this.pauseVideo();
+              }
+            } else {
+              console.log("change");
+              this.currentIndex = this.searchActiveIndex(this.currentTime);
+            }
+            
+            // this.player.loadVideoById({
+            //   videoId: this.videoId,
+            //   startSeconds: this.captionLines[this.currentIndex].startTimeMs / 1000,
+            //   endSeconds: this.captionLines[this.currentIndex].endTimeMs / 1000,
+            //   loop: 1, // 1, true... doesn't work.
+            // });
+            
+            // this.repeatChecker = setInterval(() => {
+            //   if (Math.round(this.player.getCurrentTime() * 1000) === this.captionLines[this.currentIndex].endTimeMs) {
+            //     this.pauseVideo();
+            //   }
+            // }, 100);
           }
         }
       }
@@ -235,10 +266,12 @@ export default class Dictation extends Vue {
   }
 
   onCaptionClick(timeMs: number) {
+    this.currentIndex = this.searchActiveIndex(timeMs);
     this.player.seekTo(timeMs / 1000, true); // allowSeekAhead: boolean
   }
 
   goPrevCaption(index: number) {
+    this.currentIndex = index;
     if (index > 0) {
       const timeMs = (this.captionLines[index-1]).startTimeMs;
       this.player.seekTo(timeMs / 1000, true); // allowSeekAhead: boolean
@@ -246,6 +279,7 @@ export default class Dictation extends Vue {
   }
 
   goNextCaption(index: number) {
+    this.currentIndex = index;
     if (index < this.captionLines.length - 1) {
       const timeMs = (this.captionLines[index+1]).startTimeMs;
       this.player.seekTo(timeMs / 1000, true); // allowSeekAhead: boolean
@@ -270,6 +304,7 @@ export default class Dictation extends Vue {
     this.fontSize = fontSize;
   }
 
+// TODO: move these to CaptionService.ts
   downloadCaptions() {
     let content = "";
     this.captionLines.map(caption => {

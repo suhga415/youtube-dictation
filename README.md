@@ -22,8 +22,8 @@
   - [x] handle paste event
 - Keyboard shortcuts
   - [x] video start/pause: alt
-  - [x] move to previous/next input: alt + up/down
-  - [ ] toggle play once/repeat: alt + Enter
+  - [x] move to previous <--> next: alt + up/down
+  - [ ] toggle play once(+pause) <--> repeat: alt + Enter
 - Settings (pop up)
   - [x] soft transition on open/close
   - [x] blur toggle - caption
@@ -44,6 +44,7 @@
 - [ ] Search videos
 - [ ] Some more decorations...
 - [ ] 404 Not Found page
+- [ ] Light mode <--> Dark mode
 
 ### Requirements / Bugs
 - [ ] (일시정지 상태에서) 가장 첫 캡션을 클릭했을 때 active 표시가 되지 않음
