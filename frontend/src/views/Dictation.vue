@@ -82,8 +82,20 @@ export default class Dictation extends Vue {
   isTranslationBlur = true;
   isSpellCheck = true;
   fontSize = 16;
-  // repeatChecker = -1;
+  timer = -1;
+  isSectionPlay = true;
   isReplay = true;
+
+  beforeMount() {
+    // if ((window as any).onYouTubeIframeAPIReady) {
+    //   // There is already Youtube IFrame API on this component.
+    //   if (!this.player) { // no player yet
+    //     this.initYoutubePlayer();
+    //   }
+    // } else {
+    //   this.prepareYoutubeIFrameAPI();
+    // }
+  }
 
   async mounted() {
     this.videoId = this.$route.params.id as string;
@@ -157,7 +169,7 @@ export default class Dictation extends Vue {
     this.isVideoPlayerLoading = false;
   }
 
-  handlePostMessage(event: any) {
+  async handlePostMessage(event: any) {
     // Check that the event was sent from the YouTube IFrame
     if (event.source === this.iframeWindow) {
       var data = JSON.parse(event.data);
@@ -172,42 +184,26 @@ export default class Dictation extends Vue {
         if (time !== this.currentTime) {
           this.prevTime = this.currentTime;
           this.currentTime = time;
-          // console.log(this.currentTime, Math.ceil(this.captionLines[this.currentIndex].endTimeMs / 10) * 10);
-          // if (this.currentTime === Math.ceil(this.captionLines[this.currentIndex].endTimeMs / 10) * 10) {
-          //   console.log("here");
-          //   this.pauseVideo();
+
+          // if (this.isSectionPlay && this.currentTime >= this.captionLines[this.currentIndex].endTimeMs) {
+          //   // at the end of this caption
+          //   console.log(Math.abs(this.currentTime - this.prevTime));
+          //   if (Math.abs(this.currentTime - this.prevTime) <= 300) { // 0.3 sec
+          //     if (this.isReplay) {
+          //       await this.player.seekTo(this.captionLines[this.currentIndex].startTimeMs / 1000, true);
+          //     } else {
+          //       this.pauseVideo();
+          //     }
+          //   }
           // }
+
           if (
             (this.currentIndex < this.captionLines.length - 1) &&
             (this.currentTime < this.captionLines[this.currentIndex].startTimeMs ||
             this.currentTime >= this.captionLines[this.currentIndex + 1].startTimeMs)
           ) {
             // time to change the currentIndex --> move focus to another caption bar
-            // maybe can configure the caption.repeat play ...
-            console.log(Math.abs(this.currentTime - this.prevTime))
-            if (Math.abs(this.currentTime - this.prevTime) <= 300) { // 0.3 sec
-              if (this.isReplay) {
-                this.player.seekTo(this.captionLines[this.currentIndex].startTimeMs / 1000, true);
-              } else {
-                this.pauseVideo();
-              }
-            } else {
-              console.log("change");
-              this.currentIndex = this.searchActiveIndex(this.currentTime);
-            }
-            
-            // this.player.loadVideoById({
-            //   videoId: this.videoId,
-            //   startSeconds: this.captionLines[this.currentIndex].startTimeMs / 1000,
-            //   endSeconds: this.captionLines[this.currentIndex].endTimeMs / 1000,
-            //   loop: 1, // 1, true... doesn't work.
-            // });
-            
-            // this.repeatChecker = setInterval(() => {
-            //   if (Math.round(this.player.getCurrentTime() * 1000) === this.captionLines[this.currentIndex].endTimeMs) {
-            //     this.pauseVideo();
-            //   }
-            // }, 100);
+            this.currentIndex = this.searchActiveIndex(this.currentTime);
           }
         }
       }
@@ -232,12 +228,43 @@ export default class Dictation extends Vue {
 
   onPlayerReady(evt: any) {
     // evt.target.playVideo();
+    // var iframe: any = document.getElementById('player');
+    // var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+    // console.log(innerDoc);
+    // this.videoElement = innerDoc.querySelector('.html5-main-video');
+    // console.log(this.videoElement);
+    // this.videoElement.loop = true;
+    // this.videoElement.addEventListener("timeupdate", this.loop);
   }
 
   onPlayerStateChange(event: any) {
     // console.log("Player state changed", event.target.getCurrentTime());
     this.currentState = event.data;
+
+    if (event.data === YT.PlayerState.PLAYING) {
+      console.log("play!");
+      const duration = this.captionLines[this.currentIndex].endTimeMs - Math.ceil(this.player.getCurrentTime() * 100) * 10;
+      if (duration > 0) {
+        this.setTimer(duration);
+      }
+    } else if (event.data === YT.PlayerState.PAUSED) {
+      console.log("pause!");
+      this.clearTimer();
+    }
   }
+
+  setTimer(duration: number) {
+    console.log("setTImer: ", duration)
+    this.timer = setTimeout(()=> {
+      this.player.pauseVideo();
+    }, duration)
+  }
+
+  clearTimer() {
+    console.log("clearTImer")
+    clearTimeout(this.timer);
+  }
+
 
   isCaptionActive(index: number) {
     return (index === this.currentIndex);
@@ -271,17 +298,17 @@ export default class Dictation extends Vue {
   }
 
   goPrevCaption(index: number) {
-    this.currentIndex = index;
     if (index > 0) {
-      const timeMs = (this.captionLines[index-1]).startTimeMs;
+      this.currentIndex = index - 1;
+      const timeMs = (this.captionLines[index - 1]).startTimeMs;
       this.player.seekTo(timeMs / 1000, true); // allowSeekAhead: boolean
     }
   }
 
   goNextCaption(index: number) {
-    this.currentIndex = index;
     if (index < this.captionLines.length - 1) {
-      const timeMs = (this.captionLines[index+1]).startTimeMs;
+      this.currentIndex = index + 1;
+      const timeMs = (this.captionLines[index + 1]).startTimeMs;
       this.player.seekTo(timeMs / 1000, true); // allowSeekAhead: boolean
     }
   }
