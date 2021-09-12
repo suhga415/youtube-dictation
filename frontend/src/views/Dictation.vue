@@ -7,6 +7,7 @@
           :isTranslationBlurCurrent="isTranslationBlur"
           :isSpellCheckCurrent="isSpellCheck"
           :fontSizeCurrent="fontSize"
+          :playModeCurrent="playMode"
           @close="closeSettingsModal"
         ></settings>
       </div>
@@ -340,6 +341,7 @@ export default class Dictation extends Vue {
       case PlayModes.noPause:
         this.isSectionPlay = false;
         this.isReplay = false;
+        this.clearTimer();
         break;
       case PlayModes.pause:
         this.isSectionPlay = true;

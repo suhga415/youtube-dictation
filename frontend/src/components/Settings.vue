@@ -32,8 +32,8 @@
       <div class="settings_item_select">
         <label for="play-mode">Play Mode: </label>
         <select class="settings_item__select-bar" v-model="playMode" id="play-mode">
-          <option v-for="item in playModes" :key="item" :value="item">
-            {{ item }}
+          <option v-for="(value, name) in playModes" :key="name" :value="value">
+            {{ value }}
           </option>
         </select>
       </div>
@@ -76,7 +76,7 @@ export default class Settings extends Vue {
   translationBlur = true;
   isSpellCheck = true;
   fontSize: number = 18;
-  playModes = Object.values(PlayModes);
+  playModes = PlayModes;
   playMode = PlayModes.noPause;
 
   mounted() {
