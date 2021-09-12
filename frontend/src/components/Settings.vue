@@ -29,6 +29,14 @@
         />
         <div class="settings_item_text">Do spell check: {{ isSpellCheck }}</div>
       </div>
+      <div class="settings_item_select">
+        <label for="play-mode">Play Mode: </label>
+        <select class="settings_item__select-bar" v-model="playMode" id="play-mode">
+          <option v-for="item in playModes" :key="item" :value="item">
+            {{ item }}
+          </option>
+        </select>
+      </div>
       <div class="settings_item_slider">
         <Slider
           v-model="fontSize"
@@ -46,6 +54,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
+import { PlayModes } from '../types/PlayMode'
 import Toggle from '@vueform/toggle';
 import Slider from '@vueform/slider';
 
@@ -60,18 +69,22 @@ export default class Settings extends Vue {
   @Prop() isCaptionBlurCurrent!: boolean;
   @Prop() isTranslationBlurCurrent!: boolean;
   @Prop() isSpellCheckCurrent!: boolean;
+  @Prop() playModeCurrent!: string;
   @Prop() fontSizeCurrent!: number;
 
   captionBlur = true;
   translationBlur = true;
   isSpellCheck = true;
   fontSize: number = 18;
+  playModes = Object.values(PlayModes);
+  playMode = PlayModes.noPause;
 
   mounted() {
     this.captionBlur = this.isCaptionBlurCurrent;
     this.translationBlur = this.isTranslationBlurCurrent;
     this.isSpellCheck = this.isSpellCheckCurrent;
     this.fontSize = this.fontSizeCurrent;
+    this.playMode = this.playModeCurrent;
   }
 
   closeSettingsModal() {
@@ -81,6 +94,7 @@ export default class Settings extends Vue {
       this.translationBlur,
       this.isSpellCheck,
       this.fontSize,
+      this.playMode,
     );
   }
 }

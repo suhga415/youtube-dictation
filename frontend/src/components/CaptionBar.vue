@@ -7,12 +7,12 @@
     <div
       class="caption-bar__answer"
       v-bind:class="{ 'caption-bar__answer--blur': isCaptionBlur }"
-    >{{ caption.text }}
+    ><span>{{ caption.text }}</span>
     </div>
     <div
       class="caption-bar__answer"
       v-bind:class="{ 'caption-bar__answer--blur': isTranslationBlur }"
-    >{{ caption.translation }}
+    ><span>{{ caption.translation }}</span>
     </div>
     <div contenteditable="true"
       :id="'captionInput'+index"
@@ -266,14 +266,22 @@ export default class CaptionBar extends Vue {
 
 .caption-bar__answer--blur {
   margin-bottom: 5px;
-  color: transparent;
+  color: rgb(145, 205, 207);;
   // text-shadow: 0 0 12px #111;
   transition: 0.2s;
+
+  span {
+    background-color: rgb(145, 205, 207);
+  }
 }
 
 .caption-bar__answer:hover {
   color: #111;
   text-shadow: none;
+
+  span:hover {
+    background-color: transparent;
+  }
 }
 
 .caption-bar__input {

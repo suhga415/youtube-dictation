@@ -11,6 +11,7 @@
 - [ ] About(Guide) page
 - [ ] Keyboard shortcut guide
 - [x] Download captions
+- [ ] save history, progress in local storage
 - Sync
   - [x] video --> caption (focus)
   - [x] caption --> video (focus)
@@ -51,5 +52,4 @@
 - [ ] 영상 재생/일시정지 숏컷이 영 시원치 않음...
 - [x] input focus 효과 없애기 (박스 테두리)
 - [ ] 자막 가리개 색깔 --> 바탕색과 구분가게 하기 (길이는 알 수 있게)
-- [ ] 자막 선택하여 구간 반복
-- [ ]
+- [x] 자막 선택하여 구간 반복

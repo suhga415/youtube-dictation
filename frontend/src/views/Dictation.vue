@@ -47,11 +47,11 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { Caption } from '../types/Caption';
+import { PlayModes } from '@/types/PlayMode';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import CaptionBar from '@/components/CaptionBar.vue';
 import Settings from '@/components/Settings.vue';
 import CaptionService from '@/services/CaptionService';
-import axios from 'axios';
 
 @Options({
   components: {
@@ -82,21 +82,11 @@ export default class Dictation extends Vue {
   isTranslationBlur = true;
   isSpellCheck = true;
   fontSize = 16;
-  timer = -1;
-  isSectionPlay = true;
-  isReplay = true;
+  playMode = PlayModes.noPause;
+  timer = -1; // timer id for setTimeout()
+  isSectionPlay = false;
+  isReplay = false;
   pauseToLoop = false;
-
-  beforeMount() {
-    // if ((window as any).onYouTubeIframeAPIReady) {
-    //   // There is already Youtube IFrame API on this component.
-    //   if (!this.player) { // no player yet
-    //     this.initYoutubePlayer();
-    //   }
-    // } else {
-    //   this.prepareYoutubeIFrameAPI();
-    // }
-  }
 
   async mounted() {
     this.videoId = this.$route.params.id as string;
@@ -337,6 +327,7 @@ export default class Dictation extends Vue {
     isTranslationBlur: boolean,
     isSpellCheck: boolean,
     fontSize: number,
+    playMode: string,
   ) {
     // applied the changed setting
     this.showSettingsModal = false;
@@ -344,6 +335,23 @@ export default class Dictation extends Vue {
     this.isTranslationBlur = isTranslationBlur;
     this.isSpellCheck = isSpellCheck;
     this.fontSize = fontSize;
+    this.playMode = playMode;
+    switch (this.playMode) {
+      case PlayModes.noPause:
+        this.isSectionPlay = false;
+        this.isReplay = false;
+        break;
+      case PlayModes.pause:
+        this.isSectionPlay = true;
+        this.isReplay = false;
+        break;
+      case PlayModes.repeat:
+        this.isSectionPlay = true;
+        this.isReplay = true;
+        break;
+      default:
+        console.log("no such mode");
+    }
   }
 
 // TODO: move these to CaptionService.ts
