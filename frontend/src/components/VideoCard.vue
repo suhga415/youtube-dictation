@@ -1,7 +1,5 @@
 <template>
-  <div class="home">
-    <h1>This is an Home page</h1>
-  </div>
+  
 </template>
 
 <script lang="ts">
@@ -15,6 +13,6 @@ import LocalStorageService from '@/services/LocalStorageService';
   },
 })
 
-export default class Home extends Vue {
+export default class VideoCard extends Vue {
 }
 </script>

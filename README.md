@@ -11,7 +11,7 @@
 - [ ] About(Guide) page
 - [ ] Keyboard shortcut guide
 - [x] Download captions
-- [ ] save history, progress in local storage
+- [ ] Save history, progress in local storage
 - Sync
   - [x] video --> caption (focus)
   - [x] caption --> video (focus)

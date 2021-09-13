@@ -6,11 +6,6 @@ import { Caption, Track } from './types';
 // import dotenv from 'dotenv';
 // dotenv.config();
 
-// let lang = "en";
-// let videoId = ""; // H14bBuluwB8
-// const url = `https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
-// const urlForCaptionList = `http://video.google.com/timedtext?type=list&v=${videoId}`;
-
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -70,8 +65,25 @@ const fetchCaptionTracks = async (req, res) => {
   });
 }
 
+const fetchMetadata = async (req, res) => {
+  const videoId = req.query.videoId;
+  const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=H14bBuluwB8&format=json`;
+  await axios.get(url)
+  .then((response) => {
+    res.send({
+      title: response.data.title,
+      author_name: response.data.author_name,
+      thumbnail_url: response.data.thumbnail_url,
+    });
+  })
+  .catch(err => {
+    console.log(`Error in fetching matadata for: ${videoId}`, err.message);
+  });
+}
+
 app.get("/", fetchCaptions);
 app.get("/caption-tracks", fetchCaptionTracks);
+app.get("/metadata", fetchMetadata);
 
 const handleListening = () => {
   console.log(`🧀 listening on: http://localhost:${PORT}!`);

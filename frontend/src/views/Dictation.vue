@@ -22,6 +22,7 @@
         <div v-if="!isCaptionLoading" class="settings-button-container">
           <button class="dication-button dication-button__settings" @click="openSettingsModal">Settings</button>
           <button class="dication-button dication-button__download" @click="downloadCaptions">Download Captions</button>
+          <button class="dication-button dication-button__save" @click="onClickSave">Save</button>
         </div>
         <div class="captions-container" v-if="captionLines.length">
           <div v-for="(line, index) in captionLines" :key="index">
@@ -384,6 +385,10 @@ export default class Dictation extends Vue {
       m: Math.floor((seconds % 3600) / 60),
       s: (seconds % 3600) % 60
     }
+  }
+
+  onClickSave() {
+    
   }
 }
 </script>

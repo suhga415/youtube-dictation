@@ -12,16 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// import dotenv from 'dotenv';
 const express_1 = __importDefault(require("express"));
 const axios_1 = __importDefault(require("axios"));
 const cors_1 = __importDefault(require("cors"));
 const xml_js_1 = __importDefault(require("xml-js"));
+// import dotenv from 'dotenv';
 // dotenv.config();
-// let lang = "en";
-// let videoId = ""; // H14bBuluwB8
-// const url = `https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
-// const urlForCaptionList = `http://video.google.com/timedtext?type=list&v=${videoId}`;
 const app = express_1.default();
 const PORT = process.env.PORT || 4000;
 // app.use(bodyParser.urlencoded({extended: true}));
@@ -75,8 +71,24 @@ const fetchCaptionTracks = (req, res) => __awaiter(void 0, void 0, void 0, funct
         console.log(`Error in fetching caption tracks for: ${videoId}`, err.message);
     });
 });
+const fetchMetadata = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const videoId = req.query.videoId;
+    const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=H14bBuluwB8&format=json`;
+    yield axios_1.default.get(url)
+        .then((response) => {
+        res.send({
+            title: response.data.title,
+            author_name: response.data.author_name,
+            thumbnail_url: response.data.thumbnail_url,
+        });
+    })
+        .catch(err => {
+        console.log(`Error in fetching matadata for: ${videoId}`, err.message);
+    });
+});
 app.get("/", fetchCaptions);
 app.get("/caption-tracks", fetchCaptionTracks);
+app.get("/metadata", fetchMetadata);
 const handleListening = () => {
     console.log(`🧀 listening on: http://localhost:${PORT}!`);
 };
