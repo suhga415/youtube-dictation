@@ -1,40 +1,79 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-
+    <!-- <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link> -->
+    <i class="fa-regular fa-pen-to-square" />
+    <div class="app-title">Dictationary!</div>
     <div class="video-select-bar">
-      <div class="video-select-bar_item">
-        <label for="yt-url">Video URL: </label>
-        <input
-          class="url-input-bar"
-          v-model="videoUrl"
-          type="text"
+      <div class="video-select-bar__item">
+        <va-input
           id="yt-url"
-          name="yt-url"
-          placeholder="youtube.com/watch?v=1NC-cbrEB4U"
+          class="url-input-bar mb-4"
+          v-model="videoUrl"
+          label="YouTube Video URL"
+          placeholder="https://youtube.com/watch?v=1NC-cbrEB4U"
           @input="onUrlInputChange"
-        >
+        />
+        <!-- <n-input
+          id="yt-url"
+          label="YouTube Video URL"
+          v-model:value="videoUrl"
+          type="text"
+          placeholder="https://youtube.com/watch?v=1NC-cbrEB4U"
+          @input="onUrlInputChange"
+        /> -->
       </div>
-      <div class="video-select-bar_item">
-        <label for="yt-lang">Language: </label>
+      <div class="video-select-bar__item">
+
+
+        <!-- <label for="yt-lang">Caption </label>
         <select class="language-select-bar" v-model="videoLangCode" id="yt-lang">
-          <option disabled value="">Please select one</option>
+          <option value="" disabled selected>Please select one</option>
           <option v-for="(item, index) in captionTracks" :key="index" :value="item.langCode">
             {{ item.langName }}
           </option>
-        </select>
+        </select> -->
+
+        <va-select
+          class="language-select-bar mb-4"
+          label="Caption Language"
+          v-model="videoLangCode"
+          :options="captionTracks"
+          value-by="value"
+          max-height="512px"
+        />
+
+        <!-- <n-select
+          v-model:value="videoLangCode"
+          :options="captionTracks"
+        /> -->
+
       </div>
-      <div class="video-select-bar_item">
-      <label for="yt-transl">Translation: </label>
+
+      <div class="video-select-bar__item">
+
+        <!-- <label for="yt-transl">Translation </label>
         <select class="language-select-bar" v-model="videoTranslCode" id="yt-transl">
-          <option disabled value="">Please select one</option>
+          <option value="" disabled selected>Please select one</option>
           <option v-for="(item, index) in captionTracks" :key="index" :value="item.langCode">
             {{ item.langName }}
           </option>
-        </select>
+        </select> -->
+
+        <va-select
+          class="language-select-bar mb-4"
+          label="Translation Language"
+          v-model="videoTranslCode"
+          :options="captionTracks"
+          value-by="value"
+          max-height="512px"
+        />
+
       </div>
-      <button class="video-select-bar_button" @click="onClickSubmit">SUMBIT</button>
+
+      <!-- <button class="video-select-bar__button" @click="onClickSubmit">SUMBIT</button> -->
+      <va-button class="video-select-bar__button mr-4" @click="onClickSubmit" color="info">SUMBIT</va-button>
+      <!-- <n-button @click="onClickSubmit" type="primary">SUMBIT</n-button> -->
     </div>
 
   </div>
@@ -42,16 +81,25 @@
 </template>
 
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Options, Vue } from 'vue-class-component';
 import { Track } from './types/Track';
+// import { NButton, NInput, NSelect } from 'naive-ui'
 import CaptionService from './services/CaptionService';
 
+// @Options({
+//   components: {
+//     NButton,
+//     NInput,
+//     NSelect,
+//   },
+// })
+
 export default class App extends Vue {
-  captionTracks: Track[] = [];
+  captionTracks: any[] = [];
   videoUrl = "";
   videoId!: string; // "H14bBuluwB8", "8KkKuTCFvzI", "1ALfKWG2nmw" (length: 11)
-  videoLangCode: string | null = null;
-  videoTranslCode: string | null = null;
+  videoLangCode: string = "";
+  videoTranslCode: string = "";
   isCaptionTrackLoading = false;
 
   async onUrlInputChange(event: any) {
@@ -79,7 +127,13 @@ export default class App extends Vue {
 
   async fetchCaptionTracks() {
     this.isCaptionTrackLoading = true;
-    this.captionTracks = await CaptionService.fetchCaptionTracks(this.videoId);
+    const captionTracksRes = await CaptionService.fetchCaptionTracks(this.videoId);
+    this.captionTracks = captionTracksRes.map((item) => {
+      return {
+        text: item.langName,
+        value: item.langCode,
+      }
+    })
     this.isCaptionTrackLoading = false;
   }
 
@@ -97,6 +151,10 @@ export default class App extends Vue {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;600;700&display=swap');
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -115,7 +173,8 @@ html, body {
 }
 
 #nav {
-  padding: 30px;
+  padding: 20px;
+  display: flex;
 }
 
 #nav a {
@@ -127,15 +186,22 @@ html, body {
   color: #32a9ca;
 }
 
+.app-title {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  color: black;
+}
+
 .video-select-bar {
   /* background-color: #9DDAC6; */
-  height: 50px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.video-select-bar_item {
+.video-select-bar__item {
   margin: 0 20px;
 }
 
@@ -148,9 +214,14 @@ html, body {
 .language-select-bar {
   height: 20px;
   outline: none;
+  /* padding: .8em .5em; */
 }
 
-.video-select-bar_button {
+select:required:invalid {
+  color: red;
+}
+
+.video-select-bar__button {
   border: none;
   padding: 10px;
   width: 120px;
@@ -163,7 +234,7 @@ html, body {
   line-height: normal;
 }
 
-.video-select-bar_button:hover {
+.video-select-bar__button:hover {
   background-color: #1687A7;
 }
 </style>
