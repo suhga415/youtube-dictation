@@ -1,9 +1,4 @@
 <template>
-  <!-- <div class="box-dots">
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-  </div> -->
   <div class="loading-spinner-container">
     <div class="loading-spinner"></div>
     <div class="loading-spinner-text" v-if="message.length > 0">{{message}}</div>
@@ -12,7 +7,6 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
 
 @Options({
   components: {
@@ -20,7 +14,6 @@ import { Prop } from 'vue-property-decorator';
 })
 
 export default class LoadingSpinner extends Vue {
-  // @Prop() loading!: boolean;
   message = "Loading...";
 
 }
@@ -55,30 +48,4 @@ export default class LoadingSpinner extends Vue {
   font-size: 14px;
   text-align: center;
 }
-
-// .box-dots {
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   width: 80px;
-//   animation: 1s box-dots-animation infinite ease-in-out;
-// }
-// .dot {
-//   background-color: black;
-//   height: 10px;
-//   width: 10px;
-//   border-radius: 5px;
-// }
-
-// @keyframes box-dots-animation {
-//   0% {
-//     transform: none;
-//   }
-//   50% {
-//     transform: rotate(180deg);
-//   }
-//   100% {
-//     transform: rotate(180deg);
-//   }
-// }
 </style>

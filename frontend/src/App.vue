@@ -1,7 +1,5 @@
 <template>
   <div id="nav">
-    <!-- <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> -->
     <i class="fa-regular fa-pen-to-square" />
     <div class="app-title">Dictationary!</div>
     <div class="video-select-bar">
@@ -11,29 +9,11 @@
           class="url-input-bar mb-4"
           v-model="videoUrl"
           label="YouTube Video URL"
-          placeholder="https://youtube.com/watch?v=1NC-cbrEB4U"
+          placeholder="https://youtube.com/watch?v=H14bBuluwB8"
           @input="onUrlInputChange"
         />
-        <!-- <n-input
-          id="yt-url"
-          label="YouTube Video URL"
-          v-model:value="videoUrl"
-          type="text"
-          placeholder="https://youtube.com/watch?v=1NC-cbrEB4U"
-          @input="onUrlInputChange"
-        /> -->
       </div>
       <div class="video-select-bar__item">
-
-
-        <!-- <label for="yt-lang">Caption </label>
-        <select class="language-select-bar" v-model="videoLangCode" id="yt-lang">
-          <option value="" disabled selected>Please select one</option>
-          <option v-for="(item, index) in captionTracks" :key="index" :value="item.langCode">
-            {{ item.langName }}
-          </option>
-        </select> -->
-
         <va-select
           class="language-select-bar mb-4"
           label="Caption Language"
@@ -42,24 +22,8 @@
           value-by="value"
           max-height="512px"
         />
-
-        <!-- <n-select
-          v-model:value="videoLangCode"
-          :options="captionTracks"
-        /> -->
-
       </div>
-
       <div class="video-select-bar__item">
-
-        <!-- <label for="yt-transl">Translation </label>
-        <select class="language-select-bar" v-model="videoTranslCode" id="yt-transl">
-          <option value="" disabled selected>Please select one</option>
-          <option v-for="(item, index) in captionTracks" :key="index" :value="item.langCode">
-            {{ item.langName }}
-          </option>
-        </select> -->
-
         <va-select
           class="language-select-bar mb-4"
           label="Translation Language"
@@ -68,12 +32,14 @@
           value-by="value"
           max-height="512px"
         />
-
       </div>
-
-      <!-- <button class="video-select-bar__button" @click="onClickSubmit">SUMBIT</button> -->
-      <va-button class="video-select-bar__button mr-4" @click="onClickSubmit" color="info">SUMBIT</va-button>
-      <!-- <n-button @click="onClickSubmit" type="primary">SUMBIT</n-button> -->
+      <div class="video-select-bar__item">
+        <va-button
+          class="video-select-bar__button"
+          @click="onClickSubmit"
+          color="#618fdf"
+        >SUMBIT</va-button>
+      </div>
     </div>
 
   </div>
@@ -83,16 +49,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { Track } from './types/Track';
-// import { NButton, NInput, NSelect } from 'naive-ui'
 import CaptionService from './services/CaptionService';
-
-// @Options({
-//   components: {
-//     NButton,
-//     NInput,
-//     NSelect,
-//   },
-// })
 
 export default class App extends Vue {
   captionTracks: any[] = [];
@@ -106,7 +63,7 @@ export default class App extends Vue {
     const prefix = "youtube.com/watch?v=";
     if ((this.videoUrl).includes(prefix) && this.videoUrl.length >= prefix.length + 11) {
       // 1. refine the input value, extract video ID
-      this.videoId = (this.videoUrl.replace("https://www.", "")).replace(prefix, "");
+      this.videoId = (this.videoUrl.replace("https://", "")).replace("www.", "").replace(prefix, "");
       // 2. check if it's a valid video ID / the video exists
       if (this.validVideoId(this.videoId)) {
         // 3. update language options
@@ -118,7 +75,7 @@ export default class App extends Vue {
   }
 
   async validVideoId(id: string) {
-    // Hmmm is there a better way to check?
+    // TODO: is there a better way to check?
     const url = "http://img.youtube.com/vi/" + id + "/mqdefault.jpg";
     const { status } = await fetch(url);
     if (status === 404) return false;
@@ -226,7 +183,7 @@ select:required:invalid {
   padding: 10px;
   width: 120px;
   overflow: visible;
-  background: #276678;
+  background: #82a3dd;
   border-radius: 8px;
   font: inherit;
   color: white;
@@ -235,6 +192,6 @@ select:required:invalid {
 }
 
 .video-select-bar__button:hover {
-  background-color: #1687A7;
+  background-color: #bdceec;
 }
 </style>

@@ -16,23 +16,14 @@ const express_1 = __importDefault(require("express"));
 const axios_1 = __importDefault(require("axios"));
 const cors_1 = __importDefault(require("cors"));
 const xml_js_1 = __importDefault(require("xml-js"));
-// import dotenv from 'dotenv';
-// dotenv.config();
 const app = express_1.default();
 const PORT = process.env.PORT || 4000;
-// app.use(bodyParser.urlencoded({extended: true}));
 const corsOptions = {
     origin: '*',
     credentials: true,
     optionSuccessStatus: 200,
 };
 app.use(cors_1.default(corsOptions));
-// {
-//   origin: [
-//     'http://localhost:8080',
-//     'https://youtube-dictation-frontend.herokuapp.com/'
-//   ]
-// }
 const fetchCaptions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const lang = req.query.langCode;
     const videoId = req.query.videoId;

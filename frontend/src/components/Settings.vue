@@ -144,8 +144,8 @@ export default class Settings extends Vue {
 }
 
 .toggle-theme {
-  --toggle-bg-on: #91C788;
-  --toggle-border-on: #91C788;
+  --toggle-bg-on: #8fb0ec;
+  --toggle-border-on: #8fb0ec;
   --toggle-text-on: white;
   --toggle-text-off: #374151;
   margin-right: 10px;
@@ -157,8 +157,8 @@ export default class Settings extends Vue {
 }
 
 .slider-theme {
-  --slider-connect-bg: #91C788;
-  --slider-tooltip-bg: #91C788;
+  --slider-connect-bg: #8fb0ec;
+  --slider-tooltip-bg: #8fb0ec;
   --slider-handle-ring-color: #648b5d;
 }
 

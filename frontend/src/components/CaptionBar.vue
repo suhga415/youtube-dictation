@@ -84,19 +84,8 @@ export default class CaptionBar extends Vue {
     this.$emit("caption-click", this.caption.startTimeMs);
   }
 
-  // TODO: limit the size (# of chars) of caption bar input! 
+  // TODO: limit the size (# of chars) of caption bar input 
   // TODO: event that is triggered when user stops editing
-  // onKeyup(event: Event) {
-  //   clearTimeout(this.typingTimer);
-  //   this.typingTimer = setTimeout(this.doneTyping, this.doneTypingInterval);
-  // }
-  // onKeyDown(event: Event) {
-  //   clearTimeout(this.typingTimer);
-  // }
-  // doneTyping() {
-  //   alert("done typing");
-  //   // this.spellCheck(id);
-  // }
 
   goPrevCaption(event: any) {
     event.preventDefault();
@@ -126,7 +115,6 @@ export default class CaptionBar extends Vue {
       var restore = this.saveCaretPosition(id);
       this.spellCheck(id);
       restore(this);
-      // this.setCaretLast(id);
     }
   }
 
@@ -169,41 +157,26 @@ export default class CaptionBar extends Vue {
   }
 
   //Not my functions...
-  setCaretLast(el: string) {
-    var elElement = document.getElementById(el) as HTMLElement;
-    // var range = document.createRange();
-    // var sel = window.getSelection() as Selection;
-    // const lastChildNode = elElement.childNodes[elElement.childNodes.length-1];
-    // range.setStart(lastChildNode, 2);
-    // range.collapse(true);
-    // sel.removeAllRanges();
-    // sel.addRange(range);
-    // elElement.focus();
-    this.setEndOfContenteditable(elElement);
-  }
-
-  setEndOfContenteditable(contentEditableElement: HTMLElement)
-  {
+  setEndOfContenteditable(contentEditableElement: HTMLElement) {
     var range,selection;
-    if(document.createRange)//Firefox, Chrome, Opera, Safari, IE 9+
-    {
-      range = document.createRange();//Create a range (a range is a like the selection but invisible)
-      range.selectNodeContents(contentEditableElement);//Select the entire contents of the element with the range
-      range.collapse(false);//collapse the range to the end point. false means collapse to end rather than the start
-      selection = window.getSelection() as Selection;//get the selection object (allows you to change selection)
-      selection.removeAllRanges();//remove any selections already made
-      selection.addRange(range);//make the range you have just created the visible selection
+    if (document.createRange) { // Firefox, Chrome, Opera, Safari, IE 9+
+      range = document.createRange(); // Create a range (a range is a like the selection but invisible)
+      range.selectNodeContents(contentEditableElement); // Select the entire contents of the element with the range
+      range.collapse(false); // collapse the range to the end point. false means collapse to end rather than the start
+      selection = window.getSelection() as Selection; // get the selection object (allows you to change selection)
+      selection.removeAllRanges(); // remove any selections already made
+      selection.addRange(range); // make the range you have just created the visible selection
     }
   }
 
-  saveCaretPosition(id: string){
+  saveCaretPosition(id: string) {
     var context = document.getElementById(id) as HTMLElement;
     var selection = window.getSelection() as Selection;
     var range = selection.getRangeAt(0);
     range.setStart(context, 0);
     var len = range.toString().length;
 
-    return function restore(component: CaptionBar){
+    return function restore(component: CaptionBar) {
       var pos = component.getTextNodeAtPosition(context, len);
       selection.removeAllRanges();
       var range = new Range();
@@ -212,7 +185,7 @@ export default class CaptionBar extends Vue {
     }
   }
 
-  getTextNodeAtPosition(root: any, index: any){
+  getTextNodeAtPosition(root: any, index: any) {
     const NODE_TYPE = NodeFilter.SHOW_TEXT;
     var treeWalker = document.createTreeWalker(
       root,
@@ -256,39 +229,36 @@ export default class CaptionBar extends Vue {
   padding: 10px 10px;
   margin-bottom: 20px;
   border-radius: 7px;
-  background-color: #D3E0EA;
+  background-color: #e1e6ec;
 }
 
 .caption-bar--active {
-  background-color: rgb(113, 193, 207);
+  background-color: #9cbcf3;
   // color: white;
 }
 
 .caption-bar__answer--blur {
   margin-bottom: 5px;
-  color: rgb(145, 205, 207);;
+  color: #c6d6f3;
   // text-shadow: 0 0 12px #111;
   transition: 0.2s;
 
   span {
-    background-color: rgb(145, 205, 207);
+    background-color: #c6d6f3;
   }
 }
 
-.caption-bar__answer:hover {
+.caption-bar__answer span:hover {
   color: #111;
   text-shadow: none;
-
-  span:hover {
-    background-color: transparent;
-  }
+  background-color: transparent;
 }
 
 .caption-bar__input {
   width: 100%;
   height: 25px;
   border: 1px solid #F6F5F5;
-  background-color: #F3F1F5;
+  background-color: #F5F9FB;
 }
 
 .caption-bar__input:focus {

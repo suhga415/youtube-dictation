@@ -2,8 +2,6 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import { VaInput, VaButton, VaSelect } from 'vuestic-ui'
-// import './assets/reset.css';
-
 
 createApp(App)
   .use(router)

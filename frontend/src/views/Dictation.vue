@@ -19,10 +19,24 @@
       </div>
       <div class="captions-settings">
         <loading-spinner v-if="isCaptionLoading"></loading-spinner>
-        <div v-if="!isCaptionLoading" class="settings-button-container">
-          <button class="dication-button dication-button__settings" @click="openSettingsModal">Settings</button>
-          <button class="dication-button dication-button__download" @click="downloadCaptions">Download Captions</button>
-          <button class="dication-button dication-button__save" @click="onClickSave">Save</button>
+        <div class="settings-container">
+          <div v-if="!isCaptionLoading" class="settings-button-container">
+            <va-button
+              class="dication-button mr-4"
+              flat
+              color="#5078bd"
+              icon="settings"
+              @click="openSettingsModal"
+            />
+            <va-button
+              class="dication-button mr-4"
+              flat
+              color="#5078bd"
+              icon="file_download"
+              @click="downloadCaptions"
+            />
+            <!-- <button class="dication-button" @click="onClickSave">Save</button> -->
+          </div>
         </div>
         <div class="captions-container" v-if="captionLines.length">
           <div v-for="(line, index) in captionLines" :key="index">
@@ -206,7 +220,7 @@ export default class Dictation extends Vue {
     this.player.playVideo();
   }
 
-  pauseVideo() { // *** TODO: check!!!
+  pauseVideo() {
     if (this.pauseToLoop) {
       // try to loop... go back and replay
       this.pauseToLoop = false;
@@ -244,8 +258,6 @@ export default class Dictation extends Vue {
     if (duration > 0) {
       this.timer = setTimeout(()=> {
         if (this.isReplay) {
-          // this.player.seekTo(this.captionLines[this.currentIndex].startTimeMs / 1000, true);
-          // *** TODO: and set a loop again!!!
           this.pauseToLoop = true;
         } else {
           this.pauseToLoop = false;
@@ -388,7 +400,7 @@ export default class Dictation extends Vue {
   }
 
   onClickSave() {
-    
+    // TODO
   }
 }
 </script>
@@ -406,41 +418,39 @@ export default class Dictation extends Vue {
   justify-content: center;
   height: 100%;
   width: 100%;
-  background-color: #F3F1F5;
+  background-color: #F5F9FB;
 }
 
 .video-container {
   margin-right: 10px;
 }
 
+.settings-container {
+  padding-right: 20px;
+  padding-bottom: 5px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .captions-container {
   height: 600px;
   padding: 20px;
   margin-left: 10px;
-  background-color: #F3F1F5;
+  background-color: #F5F9FB;
   overflow: auto;
 }
 
 .dication-button {
   border: none;
-  margin: 15px;
-  padding: 10px;
-  width: 120px;
+  margin-right: 5px;
   overflow: visible;
-  background: #276678;
-  border-radius: 8px;
   font: inherit;
-  color: white;
-  font-size: 15px;
+  font-size: 18px;
   line-height: normal;
 }
 
 .dication-button:hover {
   background-color: #1687A7;
-}
-
-.dication-button__download {
-  width: 200px;
 }
 
 .fade-enter-to, .fade-leave-from {

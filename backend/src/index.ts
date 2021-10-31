@@ -3,27 +3,17 @@ import axios from 'axios';
 import cors from 'cors';
 import converter from 'xml-js';
 import { Caption, Track } from './types';
-// import dotenv from 'dotenv';
-// dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// app.use(bodyParser.urlencoded({extended: true}));
-
 const corsOptions = {
   origin: '*', 
-  credentials: true, //access-control-allow-credentials:true
+  credentials: true, // access-control-allow-credentials: true
   optionSuccessStatus: 200,
 }
 
 app.use(cors(corsOptions));
-// {
-//   origin: [
-//     'http://localhost:8080',
-//     'https://youtube-dictation-frontend.herokuapp.com/'
-//   ]
-// }
 
 const fetchCaptions = async (req, res) => {
   const lang = req.query.langCode;
