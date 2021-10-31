@@ -233,7 +233,7 @@ export default class CaptionBar extends Vue {
 }
 
 .caption-bar--active {
-  background-color: #9cbcf3;
+  background-color: #afc7f1;
   // color: white;
 }
 

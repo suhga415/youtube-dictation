@@ -147,7 +147,8 @@ html, body {
   font-family: 'Nunito', sans-serif;
   font-weight: 700;
   font-size: 30px;
-  color: black;
+  color: #000D6B;
+  margin-right: 20px;
 }
 
 .video-select-bar {
