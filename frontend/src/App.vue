@@ -63,7 +63,7 @@ export default class App extends Vue {
     const prefix = "youtube.com/watch?v=";
     if ((this.videoUrl).includes(prefix) && this.videoUrl.length >= prefix.length + 11) {
       // 1. refine the input value, extract video ID
-      this.videoId = (this.videoUrl.replace("https://", "")).replace("www.", "").replace(prefix, "");
+      this.videoId = this.videoUrl.replace("https://", "").replace("www.", "").replace(prefix, "");
       // 2. check if it's a valid video ID / the video exists
       if (this.validVideoId(this.videoId)) {
         // 3. update language options

@@ -21,20 +21,12 @@
         <loading-spinner v-if="isCaptionLoading"></loading-spinner>
         <div class="settings-container">
           <div v-if="!isCaptionLoading" class="settings-button-container">
-            <va-button
-              class="dication-button mr-4"
-              flat
-              color="#5078bd"
-              icon="settings"
-              @click="openSettingsModal"
-            />
-            <va-button
-              class="dication-button mr-4"
-              flat
-              color="#5078bd"
-              icon="file_download"
-              @click="downloadCaptions"
-            />
+            <button class="dication-button" @click="openSettingsModal">
+              <font-awesome-icon icon="cog" />
+            </button>
+            <button class="dication-button" @click="downloadCaptions">
+              <font-awesome-icon icon="download" />
+            </button>
             <!-- <button class="dication-button" @click="onClickSave">Save</button> -->
           </div>
         </div>
@@ -441,16 +433,23 @@ export default class Dictation extends Vue {
 }
 
 .dication-button {
-  border: none;
-  margin-right: 5px;
+  width: 40px;
+  height: 40px;
+  border: solid 2px;
+  border-color: #D4DFEF;
+  border-radius: 50%;
+  margin-right: 10px;
   overflow: visible;
   font: inherit;
-  font-size: 18px;
+  font-size: 20px;
   line-height: normal;
+  color: #5078BD;
+  background-color: #ffffff;
 }
 
 .dication-button:hover {
-  background-color: #1687A7;
+  cursor: pointer;
+  background-color: #D4DFEF;
 }
 
 .fade-enter-to, .fade-leave-from {
