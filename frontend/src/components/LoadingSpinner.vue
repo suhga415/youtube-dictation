@@ -31,7 +31,7 @@ export default class LoadingSpinner extends Vue {
   margin: 0, auto;
   border-radius: 100%;
   border: 3px solid #eeecec;
-  border-top: 3px solid #64C9CF;
+  border-top: 3px solid #5c5e67;
   width: 27px;
   height: 27px;
   animation: loading-spinner-spin 1s linear infinite;

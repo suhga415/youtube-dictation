@@ -13,9 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const axios_1 = __importDefault(require("axios"));
 const cors_1 = __importDefault(require("cors"));
 const xml_js_1 = __importDefault(require("xml-js"));
+var axios = require("axios").default;
 const app = express_1.default();
 const PORT = process.env.PORT || 4000;
 const corsOptions = {
@@ -27,27 +27,82 @@ app.use(cors_1.default(corsOptions));
 const fetchCaptions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const lang = req.query.langCode;
     const videoId = req.query.videoId;
-    const url = `https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
-    yield axios_1.default.get(url)
-        .then((response) => {
-        const captionRaw = response.data.events;
-        const captionLines = captionRaw.map(line => {
+    const url = 'https://www.youtube.com/youtubei/v1/get_transcript'; //`https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
+    let langBase64 = Buffer.from(`\n\x00\x12\x02${lang}\x1a\x00`).toString('base64');
+    let buff = Buffer.from(`\n\x0b${videoId}\x12\x0e${langBase64.replace('=', '%3D')}`);
+    let base64data = buff.toString('base64');
+    // await axios.post(url, {
+    //   params: {key: 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8'},
+    //   headers: {'Content-Type': 'application/json'},
+    //   data: {
+    //     context: {client: {clientName: 'WEB', clientVersion: '2.2021111'}},
+    //     params: 'CgtXZHk0WUJVTHZkbw=='
+    //   }
+    // })
+    // .then((response) => {
+    //   console.log(response);
+    //   const captionRaw = response.data.events;
+    //   const captionLines = captionRaw.map(line => {
+    //     return {
+    //       text: line.segs[0].utf8,
+    //       startTimeMs: line.tStartMs,
+    //       endTimeMs: line.tStartMs + line.dDurationMs,
+    //     } as Caption;
+    //   });
+    //   res.send(captionLines);
+    // })
+    // .catch(err => {
+    //   console.log(`Error in fetching captions for: ${videoId}`, err.message);
+    // });
+    var options = {
+        method: 'POST',
+        url,
+        params: { key: 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8' },
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+            context: { client: { clientName: 'WEB', clientVersion: '2.2021111' } },
+            params: base64data
+        }
+    };
+    axios.request(options).then(response => {
+        const cueGroups = response.data.actions[0].updateEngagementPanelAction.content.transcriptRenderer.body.transcriptBodyRenderer.cueGroups;
+        const captionLines = cueGroups.map(item => {
+            const cue = item.transcriptCueGroupRenderer.cues[0].transcriptCueRenderer;
             return {
-                text: line.segs[0].utf8,
-                startTimeMs: line.tStartMs,
-                endTimeMs: line.tStartMs + line.dDurationMs,
+                text: cue.cue.simpleText,
+                startTimeMs: Number(cue.startOffsetMs),
+                endTimeMs: Number(cue.startOffsetMs) + Number(cue.durationMs),
             };
         });
         res.send(captionLines);
-    })
-        .catch(err => {
-        console.log(`Error in fetching captions for: ${videoId}`, err.message);
+    }).catch(err => {
+        console.error(`Error in fetching captions for: ${videoId}`, err.message);
     });
 });
 const fetchCaptionTracks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const videoId = req.query.videoId;
+    const { data } = yield axios.get(`https://www.youtube.com/watch?v=${videoId}`);
+    const regex = /({"captionTracks":.*isTranslatable":(true|false)}])/;
+    const [match] = regex.exec(data);
+    const { captionTracks } = JSON.parse(`${match}}`);
+    let tracks = captionTracks.filter(item => {
+        if (item.name.simpleText.includes("(auto-generated)")) {
+            return false;
+        }
+        return true;
+    });
+    tracks = tracks.map(item => {
+        return {
+            langCode: item.languageCode,
+            langName: item.name.simpleText,
+        };
+    });
+    res.send(tracks);
+});
+const fetchCaptionTracks0 = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const videoId = req.query.videoId;
     const url = `http://video.google.com/timedtext?type=list&v=${videoId}`;
-    yield axios_1.default.get(url)
+    yield axios.get(url)
         .then((response) => {
         const json = JSON.parse(xml_js_1.default.xml2json(response.data, { compact: true }));
         const tracks = json.transcript_list.track.map(item => {
@@ -65,7 +120,7 @@ const fetchCaptionTracks = (req, res) => __awaiter(void 0, void 0, void 0, funct
 const fetchMetadata = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const videoId = req.query.videoId;
     const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=H14bBuluwB8&format=json`;
-    yield axios_1.default.get(url)
+    yield axios.get(url)
         .then((response) => {
         res.send({
             title: response.data.title,

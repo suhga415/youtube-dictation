@@ -119,7 +119,6 @@ export default class App extends Vue {
   text-align: center;
   color: #2c3e50;
   height: 100%;
-  /* background-color: darkblue; */
 }
 
 html, body {
@@ -131,7 +130,6 @@ html, body {
 
 #nav {
   padding: 20px;
-  display: flex;
 }
 
 #nav a {
@@ -146,13 +144,12 @@ html, body {
 .app-title {
   font-family: 'Nunito', sans-serif;
   font-weight: 700;
-  font-size: 30px;
-  color: #000D6B;
-  margin-right: 20px;
+  font-size: 40px;
+  color: #2d56a8;
+  margin-bottom: 20px;
 }
 
 .video-select-bar {
-  /* background-color: #9DDAC6; */
   height: 40px;
   display: flex;
   justify-content: center;
@@ -164,15 +161,15 @@ html, body {
 }
 
 .url-input-bar {
-  width: 300px;
+  width: 450px;
   height: 20px;
   outline: none;
 }
 
 .language-select-bar {
+  width: 200px;
   height: 20px;
   outline: none;
-  /* padding: .8em .5em; */
 }
 
 select:required:invalid {
@@ -182,7 +179,7 @@ select:required:invalid {
 .video-select-bar__button {
   border: none;
   padding: 10px;
-  width: 120px;
+  width: 150px;
   overflow: visible;
   background: #82a3dd;
   border-radius: 8px;

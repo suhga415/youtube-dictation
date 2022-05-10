@@ -8,11 +8,6 @@ export default class CaptionService {
   static CAPTION_URL: string = config.CAPTION_URL;
   static CAPTION_TRACK_URL: string = config.CAPTION_TRACKS_URL;
 
-  /**
-   * 
-   * @param videoId 
-   * @returns 
-   */
   static async fetchCaptionTracks(videoId: string) {
     let captionTracks: Track[] = [];
     try {
@@ -32,13 +27,6 @@ export default class CaptionService {
     return captionTracks;
   }
 
-  /**
-   * 
-   * @param videoId 
-   * @param videoLangCode 
-   * @param videoTranslCode 
-   * @returns 
-   */
   static async fetchCaptions(videoId: string, videoLangCode: string, videoTranslCode: string) {
     let captionLines: Caption[] = [];
     let arrayStartTimeMs: number[] = [];
