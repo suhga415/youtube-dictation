@@ -50,6 +50,7 @@
 import { Options, Vue } from 'vue-class-component';
 import { Track } from './types/Track';
 import CaptionService from './services/CaptionService';
+import LocalStorageService from './services/LocalStorageService';
 
 export default class App extends Vue {
   captionTracks: any[] = [];
@@ -95,6 +96,7 @@ export default class App extends Vue {
   }
 
   onClickSubmit() {
+    LocalStorageService.pushVideoToHistory(this.videoId, this.videoLangCode, this.videoTranslCode);
     this.$router.push({
       name: 'dictation',
       params: {

@@ -3,12 +3,13 @@ import App from './App.vue';
 import router from './router';
 import { VaInput, VaButton, VaSelect } from 'vuestic-ui'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCog, faArrowCircleDown, faDownload } from '@fortawesome/free-solid-svg-icons'
+import { faCog, faArrowCircleDown, faDownload, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(faCog);
 library.add(faDownload);
 library.add(faArrowCircleDown);
+library.add(faTrash);
 
 createApp(App)
   .use(router)

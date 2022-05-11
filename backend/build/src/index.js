@@ -27,33 +27,10 @@ app.use(cors_1.default(corsOptions));
 const fetchCaptions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const lang = req.query.langCode;
     const videoId = req.query.videoId;
-    const url = 'https://www.youtube.com/youtubei/v1/get_transcript'; //`https://video.google.com/timedtext?lang=${lang}&v=${videoId}&fmt=json3`;
+    const url = 'https://www.youtube.com/youtubei/v1/get_transcript';
     let langBase64 = Buffer.from(`\n\x00\x12\x02${lang}\x1a\x00`).toString('base64');
     let buff = Buffer.from(`\n\x0b${videoId}\x12\x0e${langBase64.replace('=', '%3D')}`);
     let base64data = buff.toString('base64');
-    // await axios.post(url, {
-    //   params: {key: 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8'},
-    //   headers: {'Content-Type': 'application/json'},
-    //   data: {
-    //     context: {client: {clientName: 'WEB', clientVersion: '2.2021111'}},
-    //     params: 'CgtXZHk0WUJVTHZkbw=='
-    //   }
-    // })
-    // .then((response) => {
-    //   console.log(response);
-    //   const captionRaw = response.data.events;
-    //   const captionLines = captionRaw.map(line => {
-    //     return {
-    //       text: line.segs[0].utf8,
-    //       startTimeMs: line.tStartMs,
-    //       endTimeMs: line.tStartMs + line.dDurationMs,
-    //     } as Caption;
-    //   });
-    //   res.send(captionLines);
-    // })
-    // .catch(err => {
-    //   console.log(`Error in fetching captions for: ${videoId}`, err.message);
-    // });
     var options = {
         method: 'POST',
         url,
@@ -119,13 +96,13 @@ const fetchCaptionTracks0 = (req, res) => __awaiter(void 0, void 0, void 0, func
 });
 const fetchMetadata = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const videoId = req.query.videoId;
-    const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=H14bBuluwB8&format=json`;
+    const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${videoId}&format=json`;
     yield axios.get(url)
         .then((response) => {
         res.send({
             title: response.data.title,
-            author_name: response.data.author_name,
-            thumbnail_url: response.data.thumbnail_url,
+            author: response.data.author_name,
+            thumbnail: response.data.thumbnail_url.replace("hqdefault", "mqdefault"),
         });
     })
         .catch(err => {

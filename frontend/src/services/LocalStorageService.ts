@@ -1,26 +1,33 @@
+import MetadataService from "./MetadataService";
+import { config } from '../config';
+import { VideoMetadata } from '../types/VideoMetadata';
+
 export default class LocalStorageService {
   public static getHistoryList() {
-    return this.get("youtube-dictation-videos")
+    return this.get(config.LOCAL_STORAGE.HISTORY) || [];
   }
 
-  public static pushVideo() { // includes user progress
-    const list = this.getHistoryList();
+  public static setHistoryList(list: Record<string, unknown>) {
+    return this.set(config.LOCAL_STORAGE.HISTORY, list);
+  }
 
+  public static async pushVideoToHistory(videoId: string, videoLangCode: string, videoTranslCode: string) {
+    const list = this.getHistoryList();
+    const metadata = await MetadataService.fetchMetadata(videoId, videoLangCode, videoTranslCode);
+    list.unshift(metadata);
+    this.setHistoryList(list);
   }
 
   public static removeVideo(videoId: string) {
-    const list = this.getHistoryList();
-
-  }
-
-  public static getProgress(videoId: string) {
-    const list = this.getHistoryList();
-    
-  }
-
-  public static saveProgress(videoId: string) {
-    const list = this.getHistoryList();
-
+    let list = this.getHistoryList();
+    list = list.filter((item: VideoMetadata) => {
+      if (item.id === videoId) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+    this.setHistoryList(list);
   }
 
   public static get(key: string): any {

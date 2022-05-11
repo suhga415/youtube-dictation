@@ -94,13 +94,13 @@ const fetchCaptionTracks0 = async (req, res) => {
 
 const fetchMetadata = async (req, res) => {
   const videoId = req.query.videoId;
-  const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=H14bBuluwB8&format=json`;
+  const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${videoId}&format=json`;
   await axios.get(url)
   .then((response) => {
     res.send({
       title: response.data.title,
-      author_name: response.data.author_name,
-      thumbnail_url: response.data.thumbnail_url,
+      author: response.data.author_name,
+      thumbnail: response.data.thumbnail_url.replace("hqdefault", "mqdefault"),
     });
   })
   .catch(err => {
