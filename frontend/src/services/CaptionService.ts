@@ -27,30 +27,44 @@ export default class CaptionService {
     return captionTracks;
   }
 
-  static async fetchCaptions(videoId: string, videoLangCode: string, videoTranslCode: string) {
+  static async fetchCaptions(videoId: string, langCode: string) {
+    const captionsResponse = await axios.get(this.CAPTION_URL, {
+      headers: {
+        'Access-Control-Allow-Origin' : '*',
+        'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+      },
+      params: {
+        videoId: videoId,
+        langCode: langCode,
+      }
+    });
+    return captionsResponse.data;
+  }
+
+  static async prepareCaptions(videoId: string, videoLangCode: string, videoTranslCode: string) {
     let captionLines: Caption[] = [];
     let arrayStartTimeMs: number[] = [];
-    try {
-      const captionsResponse = await axios.get(this.CAPTION_URL, {
-        headers: {
-          'Access-Control-Allow-Origin' : '*',
-          'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-        },
-        params: {
-          videoId: videoId,
-          langCode: videoLangCode,
-        }
-      });
-      const translationResponse = await axios.get(this.CAPTION_URL, {
-        params: {
-          videoId: videoId,
-          langCode: videoTranslCode,
-        }
-      });
-      let captions = captionsResponse.data;
-      let translations = translationResponse.data;
 
-      let i = 0;
+    try {
+      let captions = await CaptionService.fetchCaptions(videoId, videoLangCode);
+      if (videoTranslCode) {
+        let translations = await CaptionService.fetchCaptions(videoId, videoTranslCode);
+        CaptionService.matchCaptionsWithTranslations(captions, translations);
+      }
+      captionLines = captions;
+      arrayStartTimeMs = captionLines.map(item => item.startTimeMs);
+    } catch(err) {
+      console.log(err.message);
+    }
+
+    return {
+      captionLines: captionLines,
+      arrayStartTimeMs: arrayStartTimeMs,
+    };
+  }
+
+  static async matchCaptionsWithTranslations(captions: any, translations: any) {
+    let i = 0;
       captions.forEach((item: any) => {
         // match each caption with the correct translation
         let done = false;
@@ -113,17 +127,5 @@ export default class CaptionService {
           }
         }
       });
-
-      captionLines = captions;
-      arrayStartTimeMs = captionLines.map(item => item.startTimeMs);
-    } catch(err) {
-      console.log(err.message);
-      // do something (elegant fail)
-    }
-
-    return {
-      captionLines: captionLines,
-      arrayStartTimeMs: arrayStartTimeMs,
-    };
   }
 }

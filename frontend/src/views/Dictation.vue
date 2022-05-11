@@ -126,7 +126,7 @@ export default class Dictation extends Vue {
       {
         captionLines: this.captionLines,
         arrayStartTimeMs: this.arrayStartTimeMs
-      } = await CaptionService.fetchCaptions(
+      } = await CaptionService.prepareCaptions(
         this.videoId,
         this.videoLangCode as string,
         this.videoTranslCode as string,

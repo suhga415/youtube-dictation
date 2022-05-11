@@ -16,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
     component: DictationIndex
   },
   {
-    path: '/dictation/:id/:lang/:transl',
+    path: '/dictation/:id/:lang/:transl?',
     name: 'dictation',
     component: Dictation
   },
